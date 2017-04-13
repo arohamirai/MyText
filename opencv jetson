@@ -1,0 +1,16 @@
+sudo apt-add-repository universe
+sudo apt-get update
+
+sudo apt-get install -y build-essential make cmake cmake-curses-gui g++
+sudo apt-get install -y libavformat-dev libavutil-dev libswscale-dev
+sudo apt-get install -y libv4l-dev libeigen3-dev libglew1.6-dev libgtk2.0-dev
+
+
+
+cd ~
+unzip opencv-3.1.0.zip
+cd opencv-3.1.0
+mkdir build
+cd build
+cmake -DWITH_CUDA=ON -DCUDA_ARCH_BIN="5.3" -DCUDA_ARCH_PTX="" -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DCUDA_FAST_MATH=ON ..
+sudo make -j4 install

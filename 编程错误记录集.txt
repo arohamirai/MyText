@@ -1,0 +1,23 @@
+1. 控制台下获取窗口句柄：必须放在函数内（main(),VS2013）
+	// 获取控制台窗口句柄
+	typedef HWND(WINAPI *PROCGETCONSOLEWINDOW)();
+	PROCGETCONSOLEWINDOW GetConsoleWindow;
+	HMODULE hKernel32 = GetModuleHandle("kernel32");
+	GetConsoleWindow = (PROCGETCONSOLEWINDOW)GetProcAddress(hKernel32, 	"GetConsoleWindow");
+	
+2. yv12 转 RGB
+	cv::Mat picYV12 = cv::Mat(pFrameInfo->nHeight * 3 / 2, pFrameInfo->nWidth, CV_8UC1, pYV2Buf);
+	cv::Mat picBGR;
+	cv::cvtColor(picYV12, picBGR, CV_YUV2BGR_YV12);
+
+3. 临界区CriticalSection的使用
+	//定义全局变量：
+	CRITICAL_SECTION g_cs;
+	使用：
+	//进入临界区
+	EnterCriticalSection(&g_cs);
+	//....
+	// do something
+	//...
+	// 离开临界区
+	LeaveCriticalSection(&g_cs);

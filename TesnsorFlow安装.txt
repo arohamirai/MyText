@@ -1,0 +1,61 @@
+可选1. 卸载低版本：cuda toolkit
+	cuda默认安装在/etc/local/cuda-7.0下,用下面的命令卸
+	sudo /usr/local/cuda-7.5/bin/uninstall_cuda_7.5.pl
+	或者 sudo apt-get autoremove --purge nvidia*
+可选2. 卸载低版本显卡驱动：
+	sudo sh ./NVIDIA_显卡驱动版本.run -uninstall
+
+3. 安装显卡驱动：
+	ctrl + alt + F1 切换到命令行界面
+	关闭图形界面：sudo service lightdm stop
+	sudo sh ./NVIDIA_新显卡驱动版本.run
+	一路yes
+	验证，查看驱动版本：nvidia-smi
+
+4. 安装cuda8.0:
+	仍然在命令行界面：sudo sh ./cuda_版本.run
+	第二步选择安装显卡驱动为：n，其他都为y
+	验证，查看cuda版本：nvcc -V
+5. 安装cudnn5.1 for cuda8.0:
+	tar -zxvf cudnn-8.0-linux-x64-v5.1.tgz
+	sudo cp cuda/include/cudnn.h /usr/local/cuda/include
+	sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64
+	sudo chmod a+r /usr/local/cuda/include/cudnn.h /usr/local/cuda/lib64/libcudnn*
+
+6. 安装TensorFlow，virtualenv方法：
+	sudo apt-get install libcupti-dev
+	sudo apt-get install python-pip python-dev python-virtualenv
+	创建virtualenv环境目录：virtualenv --system-site-packages tensorflow
+	激活virtualenv环境：source ~/tensorflow/bin/activate
+
+	根据python版本不同，执行不同安装方式：
+		(tensorflow)$ pip install --upgrade tensorflow      # for Python 2.7
+ 		(tensorflow)$ pip3 install --upgrade tensorflow     # for Python 3.n
+		(tensorflow)$ pip install --upgrade tensorflow-gpu  # for Python 2.7 and GPU
+		(tensorflow)$ pip3 install --upgrade tensorflow-gpu # for Python 3.3 and GPU
+	若上面命令失败，使用下面方式安装：
+	（需要梯子）
+	(1) python2.7版本：
+		CPU版本：(tensorflow)$ sudo pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.0.0-cp27-none-linux_x86_64.whl
+		GPU版本：(tensorflow)$ sudo pip install --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.0.0-cp27-none-linux_x86_64.whl
+	(2) python3.4版本：
+		CPU版本：(tensorflow)$ sudo pip3 install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.0.0-cp34-cp34m-linux_x86_64.whl
+		GPU版本：(tensorflow)$ sudo pip3 install --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.0.0-cp34-cp34m-linux_x86_64.whl
+	(3) python3.5版本：
+		CPU版本：(tensorflow)$ sudo pip3 install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.0.0-cp35-cp35m-linux_x86_64.whl
+		GPU版本：(tensorflow)$ sudo pip3 install --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.0.0-cp35-cp35m-linux_x86_64.whl
+
+
+	验证是否安装成功：
+		python
+		import tensorflow as tf
+		若成功，则安装成功。
+
+7. 每次启用，激活tensorflow环境：source ~/tensorflow/bin/activate
+	退出环境：(tensorflow)$ deactivate
+	卸载tensorflow:rm -r ~/tensorflow
+
+
+
+
+	

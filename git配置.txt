@@ -1,0 +1,30 @@
+http://blog.csdn.net/small_rice_/article/details/45095323
+
+
+#配置 你的github
+git config --global user.name "arohaMirai"  
+git config --global user.email "wslf0115@gmail.com"
+
+#编辑配置信息
+nano ~/.gitconfig 
+#修改
+[user]  
+       name = arohaMirai  
+       email = wslf0115@gmail.com
+
+#创建公钥
+ssh-keygen -C 'wslf0115@gmail.com' -t rsa   //这会在 用户目录 ~/.ssh/ 下建立相应的密钥文件
+
+#上传公钥
+在 github.com 的界面中 选择右上角的 Account Settings，然后选择 SSH Public Keys ，选择新加。
+
+Title 可以随便命名，Key 的内容拷贝自 ~/.ssh/id_rsa.pub 中的内容，完成后，可以再使用
+
+#测试
+ssh -v git@github.com 
+得到
+.......
+
+Exit status 1
+......
+表示成功

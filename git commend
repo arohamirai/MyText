@@ -1,0 +1,145 @@
+将文件添加进仓库，以让git跟踪，进行版本控制（从工作区加入到暂存区（stage））
+向仓库提交更改(从stage区提交到仓库)
+
+仓库被修改的历史记录
+
+
+git回滚到之前版本后怎么再回滚回来
+
+git reflog  #查看之前的所有操作，从这里看到之前版本的commit_id
+git reset --hard <commit_id>
+问题一：
+
+回滚到前n个版本，前一个: HEAD^,前两个: HEAD^^,前三个: HEAD^^^,.... 前n个：HEAD~n
+回滚到<commit_id>版的版本
+
+丢弃【工作区】的修改，回滚到最近一次add（使工作区回滚到与暂存区一样）或commit（使工作区回滚到与仓库一样）之前的状态
+
+丢弃【暂存区】的修改，使暂存区回滚到与仓库一样的状态，配合 git checkout 使用可以使工作区、暂存区同时回滚到与仓库一样的状态。
+
+从仓库中删除file文件，不再对其进行版本控制
+
+不小心在电脑上删除了该文件，从版本库中找回来（最近一次commit的版本）
+
+被修改、或是被删除
+
+将本地仓库master与一个远程仓库origin关联
+第一次推送master分支，加上-u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令
+
+第二次及以后推送
+
+基本命令
+
+时光穿梭
+
+远程同步
+
+分支管理
+
+列出仓库中的所有分支
+创建新分支
+切换到分支
+创建+切换到新分支
+合并某一分支到当前分支
+删除分支
+
+图形化显示commit的提交历史，包括分支的合并情况， --abbrev-commit：将commit的名称简写显示
+强制禁用Fast forward模式，使用新的commit进行分支合并，以保留历史记录中的分支信息
+
+#bug 分支
+1. git stash  把当前工作现场“储藏”起来（工作区、暂存区快照），等以后恢复现场后继续工作
+2. git stash list 查看当前“储藏”的所有工作现场（多次git stash）
+git stash pop  恢复“储藏”的工作现场，同时删除stash中的内容
+3. git stash apply  只恢复“储藏”的工作现场，不删除stash中的内容
+git stash drop 删除stash中的内容，配合git stash apply命令使用
+配合git stash list使用，恢复到指定的stash（栈模式，越近的在越上面，n越小）
+
+
+Feature 分支
+git branch -d <feature_branch_name>  删除已合并的feature 分支
+git branch -D <feature_branch_name>  强行删除未合并的feature分支
+
+TIPS:
+1.修复bug时，我们会通过创建新的bug分支进行修复，然后合并，最后删除；
+2.开发一个新feature，最好新建一个分支；
+
+git remote查看远程库的信息
+git remote -v查看远程库的详细信息，显示可以抓取和推送的origin地址，如果没有推送权限，则只能看到fetch地址，看不到push的地址。
+
+
+#多人协作
+
+git push origin <branch_name>把本地分支<branch_name>推送到对应的远程库分支<branch_name>上。
+
+git checkout -b <dev_branch_name> origin/<dev_branch_name>  将远程库中名为<dev_branch_name>的分支拉取到本地（git clone命令默认只拉取master分支）
+git pull 从远程抓取分支
+git branch --set-upstream <branch-name> origin/<branch-name>#建立本地分支和远程分支的关联
+
+
+多人协作的工作模式通常是这样：
+1.首先，可以试图用git push origin <branch-name>推送自己的修改；
+2.如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+3.如果合并有冲突，则解决冲突，并在本地提交；
+4.没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
+5.如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream <branch-name> origin/<branch-name>。
+
+#标签管理
+tag是一个让人容易记住的有意义的名字，是指向某个commit的指针，它跟某个commit绑在一起。
+git tag 查看所有标签
+git tag <tag_name>给最新的commit打上<tag_name>标签
+git tag <tag_name> <commit_id> 给commit_id的commit打上<tag_name>标签
+git show <tag_name> 查看标签信息
+git tag -a <tag_name> -m "<tag_info_string>" <commit_id> 创建带有描述标签字符串的标签
+git tag -s <tag_name> -m "<tag_info_string>" <commit_id> 用私钥签名并用创建带有描述标签字符串的标签
+
+git tag -d <tag_name>从本地删除<tag_name>标签
+git push origin :refs/tags/<tag_name> 从远程库删除<tag_name>标签，执行之前先要从本地删除<tag_name>标签
+git push origin <tag_name> 将<tag_name>标签推送到远程库
+git push origin --tags一次性推送全部尚未推送到远程的本地标签
+
+问题四：哪些分支需要推送，哪些分支不需要推送？
+1.master分支是主分支，因此要时刻与远程同步；
+2.dev分支是开发分支，团队所有成员都需要在上面工作，所以也需要与远程同步；
+3.bug分支只用于在本地修复bug，就没必要推到远程了，除非老板要看看你每周到底修复了几个bug；
+4.feature分支是否推到远程，取决于你是否和你的小伙伴合作在上面开发。
+总之，就是在Git中，分支完全可以在本地自己藏着玩，是否推送，视你的心情而定！
+
+
+问题五：
+问题二：合并（merge）模式
+1. 快进模式（Fast-forward）:也就是直接把master指向新分支的当前提交，所以合并速度非常快。
+2. 递归模式（recursive-stategy）：使用新的commit进行分支合并，以保留历史记录中的分支信息
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

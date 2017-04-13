@@ -1,0 +1,118 @@
+像这样，你不断对文件进行修改，然后不断提交修改到版本库里，就好比玩RPG游戏时，每通过一关就会自动把游戏状态存盘，如果某一关没过去，你还可以选择读取前一关的状态。有些时候，在打Boss之前，你会手动存盘，以便万一打Boss失败了，可以从最近的地方重新开始。Git也是一样，每当你觉得文件修改到一定程度的时候，就可以“保存一个快照”，这个快照在Git中被称为commit.
+
+
+
+
+
+0. github.com账户配置
+	git config --global user.name "xxx"										# 配置用户名
+	git config --global user.email "xxx@xxx.com"							# 配置邮件
+	git config --global color.ui true										# git status等命令自动着色
+	git config --global color.status auto
+	git config --global color.diff auto
+	git config --global color.branch auto
+	git config --global color.interactive auto
+
+
+1.	git init																#在本地项目文件夹下，初始化本地仓库，添加代码管理
+2.	git  remote  add  origin <URL>					
+
+#基本命令
+3.	git add <file>															#将文件添加进仓库，以让git跟踪，进行版本控制（从工作区加入到暂存区（stage））
+4.	git commit -m "<commit info>"											#向仓库提交更改(从stage区提交到仓库)
+5.	git log [--pretty=oneline]												#仓库被commit的历史记录
+
+#时光穿梭
+6.	git reset --hard HEAD~<n>												#回滚到前n个版本，前一个: HEAD^,前两个: HEAD^^,前三个: HEAD^^^,.... 前n个：HEAD~n
+7.	git reset --hard <commit_id>											#回滚到<commit_id>版的版本
+
+8.	git checkout -- <file>													#丢弃工作区的修改(被修改、或是被删除)，回滚到最近一次add（回滚到工作区与暂存区一样）或commit（回滚到工作区与仓库一样）之前的状态
+9.	git reset HEAD <file>													#丢弃【暂存区】的修改，使暂存区回滚到与仓库一样的状态，配合 git checkout 使用可以使工作区、暂存区同时回滚到与仓库一样的状态。
+	
+10.	git rm <file>															#从仓库中删除file文件，不再对其进行版本控制
+
+#远程同步
+11.	git remote add origin <repository>										#将本地仓库master与一个远程仓库origin关联
+12.	git push -u origin master												#第一次推送master分支，加上-u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令
+13.	git push origin master													#第二次及以后推送
+14.	git push origin <branch_name>											#把本地分支<branch_name>推送到对应的远程库分支<branch_name>上。
+
+#分支管理
+15.	git branch																#列出仓库中的所有分支
+16.	git branch <branch_name>												#创建新分支
+17.	git branch -b <branch_name>												#切换到分支
+18.	git checkout <branch_name>												#创建+切换到新分支
+19.	git merge <branch_name>													#合并某一分支到当前分支
+20.	git merge --no-ff -m "<merge info>" <branch_name>						#强制禁用Fast forward模式，使用新的commit进行分支合并，以保留历史记录中的分支信息
+21.	git branch -d <branch_name>												#删除分支
+22.	git log --graph --pretty=oneline --abbrev-commit						#图形化显示commit的提交历史，包括分支的合并情况， --abbrev-commit：将commit的名称简写显示
+
+
+#bug 分支
+23.	git stash																#把当前工作现场“储藏”起来（工作区、暂存区快照），等以后恢复现场后继续工作
+24.	git stash list															#查看当前“储藏”的所有工作现场（多次git stash）
+25.	git stash pop															#恢复“储藏”的工作现场，同时删除stash中的内容
+26.	git stash apply															#只恢复“储藏”的工作现场，不删除stash中的内容
+27.	git stash drop															#删除stash中的内容，配合git stash apply命令使用
+28.	git stash apply stash@{<n>}												#配合git stash list使用，恢复到指定的stash（栈模式，越近的在越上面，n越小）
+
+#Feature 分支
+29.	git branch -d <feature_branch_name>										#删除已合并的feature 分支
+30.	git branch -D <feature_branch_name>										#强行删除未合并的feature分支
+
+
+#多人协作
+31.	git push origin <branch_name>											#把本地分支<branch_name>推送到对应的远程库分支<branch_name>上。
+32.	git checkout -b <dev_branch_name> origin/<dev_branch_name> 				#将远程库中名为<dev_branch_name>的分支拉取到本地（git clone命令默认只拉取master分支）
+33.	git pull 																#从远程抓取分支
+34.	git branch --set-upstream <branch-name> origin/<branch-name>			#建立本地分支和远程分支的关联
+
+
+#标签管理
+tag是一个让人容易记住的有意义的名字，是指向某个commit的指针，它跟某个commit绑在一起。
+35.	git tag																	#查看所有标签
+36.	git tag <tag_name>														#给最新的commit打上<tag_name>标签
+37.	git tag <tag_name> <commit_id>											#给commit_id打上<tag_name>标签
+38.	git show <tag_name>														#查看标签信息
+39.	git tag -a <tag_name> -m "<tag_info_string>" <commit_id>				#创建带有描述标签字符串的标签
+40.	git tag -s <tag_name> -m "<tag_info_string>" <commit_id>				#用私钥签名并用创建带有描述标签字符串的标签
+
+41.	git tag -d <tag_name>													#从本地删除<tag_name>标签
+42.	git push origin :refs/tags/<tag_name>									#从远程库删除<tag_name>标签，执行之前先要从本地删除<tag_name>标签
+43.	git push origin <tag_name>												#将<tag_name>标签推送到远程库
+44.	git push origin --tags													#一次性推送全部尚未推送到远程的本地标签
+
+
+#TIPS:
+1.修复bug时，我们会通过创建新的bug分支进行修复，然后合并，最后删除；
+2.开发一个新feature，最好新建一个分支；
+
+
+问题一：  git回滚到之前版本后怎么再回滚回来?
+	git reflog  #查看之前的所有操作，从这里看到之前版本的commit_id
+	git reset --hard <commit_id>
+
+问题二：合并（ merge）模式
+	1.	快进模式（ Fast-forward）:也就是直接把master指向新分支的当前提交，所以合并速度非常快。
+	2.	递归模式（recursive-stategy）：使用新的commit进行分支合并，以保留历史记录中的分支信息.
+	
+问题三：分支策略
+	在实际开发中，我们应该按照几个基本原则进行分支管理：
+	1.	首先，master分支应该是非常稳定的，也就是仅用来发布新版本，平时不能在上面干活；
+	2.	那在哪干活呢？干活都在dev分支上，也就是说，dev分支是不稳定的，到某个时候，比如1.0版本发布时，再把dev分支合并到master上，在master分支发布1.0版本；
+	3.	你和你的小伙伴们每个人都在dev分支上干活，每个人都有自己的分支，时不时地往dev分支上合并就可以了。
+	
+问题四：哪些分支需要推送，哪些分支不需要推送？
+	1.	master分支是主分支，因此要时刻与远程同步；
+	2.	dev分支是开发分支，团队所有成员都需要在上面工作，所以也需要与远程同步；
+	3.	bug分支只用于在本地修复bug，就没必要推到远程了，除非老板要看看你每周到底修复了几个bug；
+	4.	feature分支是否推到远程，取决于你是否和你的小伙伴合作在上面开发。
+	总之，就是在Git中，分支完全可以在本地自己藏着玩，是否推送，视你的心情而定！
+	
+	
+问题五：多人协作的工作模式通常是这样：
+	1.	首先，可以试图用git push origin <branch-name>推送自己的修改；
+	2.	如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+	3.	如果合并有冲突，则解决冲突，并在本地提交；
+	4.	没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
+	5.	如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream <branch-name> origin/<branch-name>。
