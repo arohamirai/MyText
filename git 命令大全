@@ -36,6 +36,7 @@
 12.	git push -u origin master												#第一次推送master分支，加上-u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令
 13.	git push origin master													#第二次及以后推送
 14.	git push origin <branch_name>											#把本地分支<branch_name>推送到对应的远程库分支<branch_name>上。
+te1.	git push origin :<branch_name>											#删除远程名为<branch_name>的分之
 
 #分支管理
 15.	git branch																#列出仓库中的所有分支
