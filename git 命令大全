@@ -83,6 +83,8 @@ tag是一个让人容易记住的有意义的名字，是指向某个commit的�
 43.	git push origin <tag_name>												#将<tag_name>标签推送到远程库
 44.	git push origin --tags													#一次性推送全部尚未推送到远程的本地标签
 
+#后续补充
+45.	git mv <old_name> <new_name>								#重命名某个文件	
 
 #TIPS:
 1.修复bug时，我们会通过创建新的bug分支进行修复，然后合并，最后删除；
