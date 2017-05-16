@@ -188,6 +188,67 @@ cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_V4L
 解决方法：去http://download.csdn.net/download/specialshoot/9753560 下载，放到~/opencv_contrib/modules/dnn/.download/bd5e3eed635a8d32e2b99658633815ef/v3.1.0下，再重新cmake
 
 
+14. 安装 sunpinyin 输入法
+ sudo apt-get install  ibus-libpinyin
+
+15. opencv 编译安装 tesseract-ocr
+(1). 依赖裤安装
+sudo apt-get install autoconf automake libtool
+sudo apt-get install autoconf-archive
+sudo apt-get install pkg-config
+sudo apt-get install libpng12-dev
+sudo apt-get install libjpeg8-dev
+sudo apt-get install libtiff5-dev
+sudo apt-get install zlib1g-dev
+
+sudo apt-get install libicu-dev
+sudo apt-get install libpango1.0-dev
+sudo apt-get install libcairo2-dev
+
+(2). leptonica 安装
+  http://www.leptonica.org/download.html 下载最新版
+  
+  ./configure
+  make
+  make check   查看是否编译成功
+  sudo make install
+  
+(3). tesseract-ocr 编译 (http://blog.chinaunix.net/uid-20718384-id-3291015.html)
+(3.1). 编译tesseract-ocr
+git clone https://github.com/tesseract-ocr/tesseract.git
+cd tesseract
+./autogen.sh
+./configure
+
+sudo mv /usr/local/include/leptonica/* ../
+
+LDFLAGS="-L/usr/local/lib" CFLAGS="-I/usr/local/include" make
+sudo make install
+sudo ldconfig
+
+(3.2) 下载中文、英文语言包
+https://github.com/tesseract-ocr/tessdata 
+（下载需要的语言包，放在/usr/local/share/tessdata下）
+sudo mv eng.traineddata chi_sim.traineddata /usr/local/share/tessdata
+
+sudo gedit ~/.bashrc
+尾部添加 export TESSDATA_PREFIX=/usr/local/share
+source ~/.bashrc
+
+(3.3) 安装图片格式转换工具，因为tesseract只识别tif格式的图片
+sudo apt-get install imagemagick
+
+convert a.jpg a.tif  t（转换图片）
+(3.4) 使用tesseract
+tesseract a.tif a	（默认英文）
+tesseract a.tif a -l chi_sim  （使用中文测试tesseract-ocr,可以+号链接多种语言，例如：eng+chi_sim）
+
+	
+
+
+ 
+
+
 
 
 

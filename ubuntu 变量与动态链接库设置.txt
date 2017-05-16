@@ -1,0 +1,28 @@
+http://blog.csdn.net/u014266895/article/details/61928602
+一、变量设置：
+	1. 对所有用户生效：
+		在/etc/profile中添加变量
+		sudo gedit /etc/profile
+	2. 只对当前用户生效：
+		在~/.bashrc中添加变量
+		sudo gedit ~/.bashrc
+	
+		使~/.bashrc立即生效命令：
+		source ~/.bashrc
+
+		
+二、加载动态链接库：
+	0. 系统默认动态链接库在：/lib 和/usr/lib 下，若动态库在其他目录下，则需要告诉系统去哪里寻找
+
+	1. 本次开机临时加载动态链接库，关机失效：
+	export LD_LIBRARY_PATH = <new_lib_path>:$LD_LIBRARY_PATH
+
+
+	2. 开机自动加载动态链接库目录：
+		/etc/ld.so.conf中有语句include /etc/ld.so.conf.d/*.conf,即包含 /etc/ld.so.conf.d/ 目录下的所有*.conf文件
+		两种方法：
+			(1). 在/etc/ld.so.conf 添加动态库目录，例如：/usr/local/leptonica/lib
+			(2). 在/etc/ld.so.conf.d/ 目录下新建*.conf文件，名字取有意义的，在该文件下添加动态库目录，
+				例如：新建leptonica.conf文件，在该文件内添加 /usr/local/leptonica/lib
+		立即生效命令：
+		sudo ldconfig
