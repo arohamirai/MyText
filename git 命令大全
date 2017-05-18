@@ -90,6 +90,16 @@ tag是一个让人容易记住的有意义的名字，是指向某个commit的�
 45.	git mv <old_name> <new_name>											#重命名某个文件	
 46.	git push origin :<branch_name>											#删除远程名为<branch_name>的分之
 
+47.	重命名文件夹
+	git mv -f <oldFolderName> <newFolderName>								#重命名文件夹，  -f 表示是文件夹
+	git add -u <newFolderName>												#提交到暂存区，  -u选项会更新已经追踪的文件和文件夹
+	git commit -m "changed the oldFolderName to newFolderName"				#提交commit
+	
+48. 
+	git mv <oldFileName> [new_path]<newFileName>							#重命名/移动文件
+	git add -u <newFileName>												#提交到暂存区，  -u选项会更新已经追踪的文件和文件夹
+	git commit -m "changed the oldFileName to newFileName"					#提交commit
+
 #TIPS:
 1.修复bug时，我们会通过创建新的bug分支进行修复，然后合并，最后删除；
 2.开发一个新feature，最好新建一个分支；

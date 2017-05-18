@@ -181,7 +181,7 @@ mkdir build
 cd build
 
 (挂上梯子)
-cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_V4L=ON -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules/ ..
+cmake -D CMAKE_BUILD_TYPE=Release -D CUDA_ARCH_BIN=61 -D CUDA_ARCH_PTX=61 -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_V4L=ON -D OPENCV_EXTRA_MODULES_PATH=~/opencv3.2/opencv_contrib/modules/ ../opencv
 
 
 错误1：无法下载protobuf-cpp-3.1.0.tar.gz
