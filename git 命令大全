@@ -5,14 +5,17 @@
 
 
 0. github.com账户配置
-	git config --global user.name "xxx"										# 配置用户名
-	git config --global user.email "xxx@xxx.com"							# 配置邮件
+	git config --global user.name "arohaMirai"								# 配置用户名
+	git config --global user.email "wslf0115@gmail.com"						# 配置邮件
 	git config --global color.ui true										# git status等命令自动着色
 	git config --global color.status auto
 	git config --global color.diff auto
 	git config --global color.branch auto
 	git config --global color.interactive auto
-
+	
+	nano ~/.gitconfig														#查看用户名和邮箱是否配置成功
+	ssh-keygen -C 'wslf0115@gmail.com' -t rsa								#生成SSH密钥，将 ~/.ssh/目录下的id_rsa.pub公钥添加到github.com（在 github.com 的界面中选择右上角的 Account Settings，然后选择 SSH Public Keys，选择新加。）
+	ssh -v git@github.com													#测试SSH密钥是否添加成功（输出....... Exit status 1 ......表示添加成功）
 
 1.	git init																#在本地项目文件夹下，初始化本地仓库，添加代码管理
 2.	git  remote  add  origin <URL>					
