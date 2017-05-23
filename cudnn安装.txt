@@ -1,0 +1,14 @@
+cudnn安装
+解压：
+cd <path>
+
+sudo cp include/* /usr/local/cuda-8.0/include/
+sudo cp lib64/libcudnn.so.6.0.21  /usr/local/cuda-8.0/lib64/
+sudo cp lib64/libcudnn_static.a /usr/local/cuda-8.0/lib64/
+
+sudo ln -s /usr/local/cuda-8.0/lib64/libcudnn.so.6.0.21 /usr/local/cuda-8.0/lib64/libcudnn.so.6
+sudo ln -s /usr/local/cuda-8.0/lib64/libcudnn.so.6 /usr/local/cuda-8.0/lib64/libcudnn.so
+
+#sudo chmod a+r /usr/local/cuda-8.0/include/cudnn.h /usr/local/cuda-8.0/lib64/libcudnn*
+
+

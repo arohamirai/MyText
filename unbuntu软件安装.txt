@@ -165,10 +165,7 @@ sudo add-apt-repository --remove ppa:notepadqq-team/notepadqq
 
 
 13. opencv3.2.0 与opencv_contrib模块编译安装
-sudo apt-get install build-essential
-sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
-sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev 
-sudo apt-get install libv4l-0 libv4l-dev
+sudo apt-get install build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev libprotobuf-dev libleveldb-dev libsnappy-dev libhdf5-serial-dev protobuf-compiler libatlas-base-dev libgflags-dev libgoogle-glog-dev liblmdb-dev python-pip  python-scipy libv4l-0 libv4l-dev
 
 
 
@@ -187,8 +184,11 @@ cmake -D CMAKE_BUILD_TYPE=Release -D CUDA_ARCH_BIN=61 -D CUDA_ARCH_PTX=61 -D CMA
 错误1：无法下载protobuf-cpp-3.1.0.tar.gz
 解决方法：去http://download.csdn.net/download/specialshoot/9753560 下载，放到~/opencv_contrib/modules/dnn/.download/bd5e3eed635a8d32e2b99658633815ef/v3.1.0下，再重新cmake
 
+错误2: 无法下载
+https://yinguobing.com/install-ippcv-manually/
 
-14. 安装 sunpinyin 输入法
+
+14. 安装 sunpinyin 输入法 ippicv_2017u2_lnx_intel64_20170418.tgz
  sudo apt-get install  ibus-libpinyin
 
 15. opencv 编译安装 tesseract-ocr
