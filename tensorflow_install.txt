@@ -63,10 +63,10 @@
 			）
 		python -V         #显示anaconda3版本和Python版本(以下基于python3.5版本)
 	（2） tensorFlow 安装：
-		conda create -n tensorflow python=3.5
+		conda create -n tensorflow python=3.5(可能失败,失败后手打这段代码，具体原因不名)
 		source activate tensorflow
 		pip install --ignore-installed -upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.1.0-cp35-cp35m-linux_x86_64.whl
-		(pip install之前可能要升级一下pip，实际操作看提示。如果下载不动，可先到github下载对应  .whl 文件并修改权限，再执行 pip install tensorflow_gpu-1.1.0-cp35-cp35m-linux_x86_64.whl)
+		(pip install之前可能要升级一下pip，实际操作看提示。如果下载不动，可先到github下载对应  .whl 文件并修改权限，再执行 pip install tensorflow_gpu-1.2.0rc0-cp35-cp35m-linux_x86_64.whl)
 	(3) 验证安装：
 		spyder
 		输入 import tensorflow as tf
