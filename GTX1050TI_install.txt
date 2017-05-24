@@ -42,6 +42,29 @@ sudo gedit /etc/ld.so.conf  添加 /usr/local/cuda8.0/lib64
 sudo ldconfig
 
 三、cudnn安装
+
+下载完cudnn5.0之后进行解压，cd进入cudnn5.1,tar xvzf cudnn-8.0-linux-x64-v4.tgz 
+解压之后的include目录，在命令行进行如下操作：
+	sudo cp cuda/include/cudnn.h /usr/local/cuda/include/
+	sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64/
+	sudo chmod a+r /usr/local/cuda/include/cudnn.h
+	sudo chmod a+r /usr/local/cuda/lib64/libcudnn*
+	或：sudo cp cudnn.h /usr/local/cuda/include/    #复制头文件
+		sudo cp lib* /usr/local/cuda/lib64/    #复制动态链接库
+		cd /usr/local/cuda/lib64/
+sudo rm -rf libcudnn.so libcudnn.so.5 #删除原有动态文件	
+		sudo ln -s libcudnn.so.5.0.5 libcudnn.so.5  #生成软衔接
+		sudo ln -s libcudnn.so.5 libcudnn.so      #生成软链接
+		sudo ldconfig   #更新链接库
+
+
+
+
+
+
+
+
+#cudnn6.0尝试失败，原因不明
 解压：
 cd <path>
 
