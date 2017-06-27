@@ -1,4 +1,4 @@
-可选1. 卸载低版本：cuda toolkit
+﻿可选1. 卸载低版本：cuda toolkit
 	cuda默认安装在/etc/local/cuda-7.0下,用下面的命令卸
 	sudo /usr/local/cuda-7.5/bin/uninstall_cuda_7.5.pl
 	或者 sudo apt-get autoremove --purge nvidia*
@@ -22,7 +22,7 @@
 	sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64
 	sudo chmod a+r /usr/local/cuda/include/cudnn.h /usr/local/cuda/lib64/libcudnn*
 
-6. 安装TensorFlow，virtualenv方法：
+6.1 安装TensorFlow，virtualenv方法：
 	sudo apt-get install libcupti-dev
 	sudo apt-get install python-pip python-dev python-virtualenv
 	创建virtualenv环境目录：virtualenv --system-site-packages tensorflow
@@ -51,9 +51,50 @@
 		import tensorflow as tf
 		若成功，则安装成功。
 
+6.2 安装tensorFlow, Anaconda3方法：
+	（1） Anaconda3安装：
+		sudo ./Anaconda3-4.2.0-Linux-x86_64.sh
+		一路yes
+		source ~/.bashrc 更新环境变量
+		conda list 检查环境配置，如果没有反应，则按下面手动配置环境
+			（
+			sudo gedit ~/.bashrc
+			export PATH="/home/lile/anaconda3/bin:$PATH"
+			）
+		python -V         #显示anaconda3版本和Python版本(以下基于python3.5版本)
+	（2） tensorFlow 安装：
+		conda create -n tensorflow python=3.5(可能失败,失败后手打这段代码，具体原因不名)
+		source activate tensorflow
+		pip install --ignore-installed --upgrade（可能是-） https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.1.0-cp35-cp35m-linux_x86_64.whl
+		(pip install之前可能要升级一下pip，实际操作看提示。如果下载不动，可先到github下载对应  .whl 文件并修改权限，再执行 pip install tensorflow_gpu-1.2.0rc0-cp35-cp35m-linux_x86_64.whl)
+	(3) 验证安装：
+		spyder
+		输入 import tensorflow as tf
+		不提示错误则表示安装成功
+
+6.3 windows下安装tensorFlow,Anaconda3方法：
+	（1） 安装显卡驱动、CUDA、CUDNN5.1.
+	（2） 安装 python=3.5 版本的 Anaconda3.exe
+	（3） tensorFlow安装：
+		打开 Anaconda Prompt控制台窗口
+		pip install --ignore-installed --upgrade tensorflow_gpu-1.1.0rc2-cp35-cp35m-win_amd64.whl
+	（4） 验证安装：
+		spyder
+		import tensorflow as tf
+		不提示错误则表示安装成功		
+
+
 7. 每次启用，激活tensorflow环境：source ~/tensorflow/bin/activate
 	退出环境：(tensorflow)$ deactivate
 	卸载tensorflow:rm -r ~/tensorflow
+
+
+
+ 
+
+
+
+
 
 
 
