@@ -1,0 +1,124 @@
+1. os.listdir(folder):获取某一目录下所有文件夹和文件的名字；
+2. os.path.join(folder,filename):字符串连接
+
+
+# 写入文件
+```
+import os
+import tensorflow as tf
+from PIL import Image
+
+# current work dirctory
+cwd = os.getcwd()
+cwd = '/home/lile/Desktop/dst/train/'
+
+num_classes = ('bird','cat','dog')
+
+def create_record():
+    '''
+    此处我加载的数据目录如下：
+    0 -- bird1.jpg
+         bird2.jpg
+         bird3.jpg
+         ...
+    1 -- cat1.jpg
+         cat2.jpg
+         ...
+    2 -- ...
+    ...
+    '''
+    writer = tf.python_io.TFRecordWriter("train.tfrecords")
+    for index, name in enumerate(num_classes):
+        class_path = cwd + name + "/"
+        for img_name in os.listdir(class_path):
+            img_path = class_path + img_name
+            img = Image.open(img_path)
+            img = img.resize((224, 224))
+            
+            img_raw = img.tobytes() #将图片转化为原生bytes
+            
+            example = tf.train.Example(features=tf.train.Features(feature={
+                "label": tf.train.Feature(int64_list=tf.train.Int64List(value=[index])),
+                'img_raw': tf.train.Feature(bytes_list=tf.train.BytesList(value=[img_raw]))
+            }))
+            
+            writer.write(example.SerializeToString())
+            
+    writer.close()
+
+def read_and_decode(filename):
+    filename_queue = tf.train.string_input_producer([filename])
+
+    reader = tf.TFRecordReader()
+    _, serialized_example = reader.read(filename_queue)
+    features = tf.parse_single_example(serialized_example,
+                                       features={
+                                           'label': tf.FixedLenFeature([], tf.int64),
+                                           'img_raw' : tf.FixedLenFeature([], tf.string),
+                                       })
+
+    # decode_raw 可以将字符串解析成图像对应的像素数组
+    img = tf.decode_raw(features['img_raw'], tf.uint8)
+    img = tf.reshape(img, [224, 224, 3])
+    img = tf.cast(img, tf.float32) * (1. / 255) - 0.5
+    label = tf.cast(features['label'], tf.int32)
+
+    return img, label
+    
+    
+create_record()
+
+image,label = read_and_decode("train.tfrecords")
+
+```
+
+# 读入文件
+```
+import tensorflow as tf
+
+filename = "/home/lile/train.tfrecords
+
+reader = tf.TFRecordReader()
+# 创建一个队列来维护文件列表
+filename_queue = tf.train.string_input_producer([filename])
+
+# 从文件中读出一个样例，也可以使用read_up_to函数一次性读取多个样例
+_, serialized_example = reader.read(filename_queue)
+
+# 解析读入的一个样例，如果需要解析多个样例，可以用parse_example函数
+features = tf.parse_single_example(serialized_example,
+                                       features={
+                                       # TensorFlow 提供两种不同的属性解析方法：
+                                       # tf.FixedLenFeature, 结果为一个Tensor，
+                                       # tf.VarLenFeature, 结果为一个SparseTensor,用于处理稀疏数据
+                                       # 格式要与写入时格式一致
+                                       # BytesList:string, Int64List:int64
+                                           'label': tf.FixedLenFeature([], tf.int64),
+                                           'img_raw' : tf.FixedLenFeature([], tf.string),
+                                       })
+                                       
+# 解码图像数据
+images0 = tf.decode_raw(features['img_raw'],tf.uint8)
+# reshape图像尺寸
+images = tf.reshape(images0,[224,224,3])
+labels = tf.cast(features['label'],tf.int32)
+
+
+with tf.Session() as sess:
+    # 启动多线程处理输入数据
+    coord = tf.train.Coordinator()
+    threads = tf.train.start_quneue_runners(sess = sess, coord = coord)
+    
+    # 每次运行可以读取TFRecord文件中的一个样例，当所有样例都读完之后，在此样例中程序会再重头读取
+    image,label = sess.run([images,labels])
+    
+    import matplotlib.pyplot as plt
+    
+    plt.imshow(image[0])    
+
+
+
+
+```
+
+
