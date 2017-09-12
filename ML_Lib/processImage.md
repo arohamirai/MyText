@@ -1,8 +1,9 @@
+# <center>读写图像</center>
+
 [使用Numpy和Scipy处理图像](http://www.open-open.com/lib/view/open1417942286667.html)
 [matplotlib和PIL读取图像](http://www.cnblogs.com/yinxiangnan-charles/p/5928689.html)
 在 python 中除了用 opencv，也可以用 matplotlib 和 PIL 这两个库操作图片。本人偏爱 matpoltlib，因为它的语法更像 matlab。
 
-# 一、读写图像
 ## 1. matplotlib库方法
 ```
 import matplotlib.pyplot as plt # plt 用于显示图片
@@ -18,26 +19,25 @@ plt.show()
 ```
 
 ## 2. scipy库方法
- ```
+```
 from scipy import misc
-
+```
 # type(lena) 为numpy.ndarray
+```
 img = misc.imread('lena.jpg')
 misc.imsave('lena.jpg',img)
 
- ```
+```
  
 ## 3. PIL库方法
- ```
- from PIL import Image
- 
+```
+from PIL import Image
 # type(im) 不是 numpy.ndarray，而是 PIL.JpegImagePlugin.JpegImageFile
+```
 im = Image.open('lena.png')
-
 # 显示图像
 im.show()
-
- ```
+```
  
 # 二、批量读取图片
 ```
