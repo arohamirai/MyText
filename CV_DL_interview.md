@@ -41,8 +41,16 @@
 	b. 多元logistic回归:思想：One VS One、one VS all和Many VS Many。
 待完善11. 数据集划分
 	a. 交叉验证(Cross Validation):一种数据集划分方法，同时也是一种模型挑选方法，适用于数据量较少的场合。
+	b. 验证集(Validation Dataset):用于调整模型的超参数，为你和后的模型提供无偏估计。
+	c. 测试集(Testing Dataset):为你和后的最终模型提供无偏估计。
+	d. 存在$$J_valid < J_test$$的情况，因为最终模型有在验证集上进行了优化。
+	e. 偏斜类(Skewed class):
+		1). 准确率(Precision)/召回率(Recall);
+		2). F-Score = P*R/(P+R);
 
 待完善12. 欠拟合和过拟合(underfitting, overfitting)
+
+待完善13. 学习曲线(Learning curve)
 
 
 数据清洗
