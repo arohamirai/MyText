@@ -64,6 +64,13 @@
 # 四、传统模式识别相关
 （KNN, GMM, EM, PCA, K-means, SMO）
 
+# 机器学习库
+(tensorflow,MxNet)
+1. tf.Session()和tf.InteractiveSession()有何异同？
+	a. tf.InteractiveSession():它能让你在运行图的时候，插入一些计算图，这些计算图是由某些操作(operations)构成的。这对于工作在交互式环境中的人们来说非常便利，比如使用IPython。tf.Session():需要在启动session之前构建整个计算图，然后启动该计算图。
+	b. tf.InteractiveSession()：自动将自身注册为默认计算图，这样就不用每次显示指定运算所在的graph.
+	
+
 # 五、工作经验
 
 # 六、专业能力
