@@ -52,5 +52,32 @@
 		rostopic list: 列出所有当前订阅和发布的话题。
 		rostopic list -v: 显示出有关所发布和订阅的话题及其类型的详细信息。
 		rostopic 的其他命令可以通过帮助查看(-h 参数)
+# 七. 理解ROS服务和参数
+	1. ROS Services:服务（services）是节点之间通讯的另一种方式。服务允许节点发送请求（request） 并获得一个响应（response）。
+		使用方法：
+		rosservice list         输出可用服务的信息
+		rosservice call         调用带参数的服务
+		rosservice type         输出服务类型
+		rosservice find         依据类型寻找服务find services by service type
+		rosservice uri          输出服务的ROSRPC uri
+	2. rosparam：rosparam使得我们能够存储并操作ROS 参数服务器（Parameter Server）上的数据。参数服务器能够存储整型、浮点、布尔、字符串、字典和列表等数据类型。rosparam使用YAML标记语言的语法。
+		使用方法：
+		rosparam set            设置参数
+		rosparam get            获取参数
+		rosparam get /			获取所有参数
+		rosparam load           从文件读取参数
+		rosparam dump           向文件中写入参数
+		rosparam delete         删除参数
+		rosparam list           列出参数名
+	3. rosparam dump and rosparam load：参数保存与加载
+		rosparam dump [file_name]
+		rosparam load [file_name] [namespace]
+# 八. 使用rqt_console和roslaunch
+	1. rqt_console:属于ROS日志框架(logging framework)的一部分，用来显示节点的输出信息。
+	2. rqt_logger_level:允许我们修改节点运行时输出信息的日志等级（logger levels）（包括 DEBUG、WARN、INFO和ERROR）。
+	3. roslaunch:roslaunch可以用来启动定义在launch文件中的多个节点。
+# 九. 1 消息(msg)和服务(srv)介绍
 
+消息(msg): msg文件就是一个描述ROS中所使用消息类型的简单文本。它们会被用来生成不同语言的源代码。
+服务(srv): 一个srv文件描述一项服务。它包含两个部分：请求和响应。 msg文件存放在package的msg目录下，srv文件则存放在srv目录下。 msg文件实际上就是每行声明一个数据类型和变量名。
 	
