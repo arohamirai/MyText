@@ -1,4 +1,8 @@
 # ROS
+# 问答：
+	1. 什么时候要source ~/catkin_ws/devel/setup.zsh?
+		答： 每次打开新终端时。其作用是读取当前catkin工作空间的环境变量。
+
 # 二. ROS环境
 	ROS_MASTER_URI:ROS结点管理器路径
 	ROS_ROOT：ROS core packages路径
@@ -80,4 +84,17 @@
 
 消息(msg): msg文件就是一个描述ROS中所使用消息类型的简单文本。它们会被用来生成不同语言的源代码。
 服务(srv): 一个srv文件描述一项服务。它包含两个部分：请求和响应。 msg文件存放在package的msg目录下，srv文件则存放在srv目录下。 msg文件实际上就是每行声明一个数据类型和变量名。
-	
+# 十. 编写简单的消息发布器和订阅器 (C++)
+  1. catkin_make --force-cmake:强制重新编译
+# 十一. 编写简单的服务器和客户端 (C++)
+	1. 服务跟节点是不一样的，服务类似于远程函数调用，节点相当于两个程序通信。
+	2. 节点之间通过话题[topic]通信,服务端与客户端之间不需要话题。
+# 十二. 录制与回放数据
+ 1. 录制数据（通过创建一个bag文件）：记录ROS系统运行时的话题数据（publisher的才能被记录），记录的话题数据将会累积保存到bag文件中。
+	1.1 rosbag record -a:将当前发布的所有话题数据都录制保存到一个bag文件中,文件名以录制时间命名。
+	1.2 rosbag record -O <subset_bagfile_name> <publisher name>:录制指定话题数据，-O参数告诉rosbag record将数据记录保存到名为subset_bagfile_name.bag的文件中，同时后面的话题参数告诉rosbag record只能录制指定的话题
+	1.3 rosbag info <your bagfile>：录制的bagfile 文件包含信息。
+	1.4 rosbag play <your bagfile>: 回放录制信息(-d, -r 参数控制等待时间、消息发布速率)
+	1.5 rosbag record/play 命令的局限性:在前述部分中你可能已经注意到了turtle的路径可能并没有完全地映射到原先通过键盘控制时产生的路径上——整体形状应该是差不多的，但没有完全一样。造成该问题的原因是turtlesim的移动路径对系统定时精度的变化非常敏感。rosbag受制于其本身的性能无法完全复制录制时的系统运行行为，rosplay也一样。对于像turtlesim这样的节点，当处理消息的过程中系统定时发生极小变化时也会使其行为发生微妙变化，用户不应该期望能够完美的模仿系统行为。
+
+
