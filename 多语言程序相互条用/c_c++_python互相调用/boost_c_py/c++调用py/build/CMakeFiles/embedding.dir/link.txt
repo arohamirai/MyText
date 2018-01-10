@@ -1,0 +1,1 @@
+/usr/bin/c++       CMakeFiles/embedding.dir/embedding.cc.o  -o embedding  -L/usr/lib/python2.7 -rdynamic -lpython2.7 -lboost_python -lboost_system -Wl,-rpath,/usr/lib/python2.7 

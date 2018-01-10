@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/keetsky/Desktop/c_c++_python互相调用/boost_c_py/embedding.cc
+iostream
+-
+boost/python.hpp
+-
+

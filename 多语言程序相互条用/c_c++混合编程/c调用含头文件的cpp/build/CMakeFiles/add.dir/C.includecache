@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/keetsky/Desktop/c_c++混合编程/add.c
+add1.h
+/home/keetsky/Desktop/c_c++混合编程/add1.h
+stdio.h
+-
+
+/home/keetsky/Desktop/c_c++混合编程/add1.h
+
