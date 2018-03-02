@@ -11,3 +11,6 @@
 #4. dirname
 	获取文件或文件夹的父目录路径(dirname [file/path])
 #5. readlink和dirname经常一起组合使用，用于获取文件或文件夹名的绝对路径（不包括文件或文件夹名）(script_path=$(dirname $(readlink -f "$0")))
+
+##6. 脚本中开新终端
+	gnome-terminal -x bash -c "roscore;exec bash"  ，双引号中为要执行的命令，多个命令用分号(";")分隔，exec bash表示执行完不关闭终端
