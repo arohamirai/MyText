@@ -88,7 +88,8 @@ tag是一个让人容易记住的有意义的名字，是指向某个commit的�
 
 #后续补充
 45.	git mv <old_name> <new_name>											#重命名某个文件	
-46.	git push origin :<branch_name>											#删除远程名为<branch_name>的分之
+46.	git push origin :<branch_name>											#删除远程名为<branch_name>的分支
+46.2 git push origin -d <branch_name>										#删除远程名为<branch_name>的分支
 
 47.	重命名文件夹
 	git mv -f <oldFolderName> <newFolderName>								#重命名文件夹，  -f 表示是文件夹
