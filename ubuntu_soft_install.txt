@@ -243,6 +243,16 @@ convert a.jpg a.tif  t（转换图片）
 tesseract a.tif a	（默认英文）
 tesseract a.tif a -l chi_sim  （使用中文测试tesseract-ocr,可以+号链接多种语言，例如：eng+chi_sim）
 
+16. VMware 分辨率设置失效
+
+新安装或异常关机和重新划分分区导致的vmware tools失效，不能复制粘贴文件以及自动适应窗口分辨率，无论怎样重装vmware tools或open-vm-tools均无效。
+最后发现有效的方法如下，对15.10和16.04都有效：
+sudo apt-get install open-vm-tools
+sudo apt-get install open-vm-tools-desktop
+
+maybe:
+sudo apt-get installopen-vm-tools-dkms
+
 	
 
 
