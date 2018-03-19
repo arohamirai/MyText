@@ -1,36 +1,36 @@
-#Ubuntu中常见特殊符号
+#一、Ubuntu中常见特殊符号
 
 ##1. ( > ) 重定向输出符号
 用法：命令 >文件名
 特性：覆盖（当输入文件和输出文件是同一文件，文件内容被清空；不适合连续重定向）
 典型应用：
-~$ cat a b >c  (合并文件)
-~$ echo "hello world" > hello.txt  (输入内容到指定文件)
-~$ ./test.sh > /dev/null (删除程序输入)
+ cat a b >c  (合并文件)
+ echo "hello world" > hello.txt  (输入内容到指定文件)
+ ./test.sh > /dev/null (删除程序输入)
 ##2. ( >> ) 输出重定向
 用法：命令 >>文件名
 特性：追加
 典型应用：
-~$ cat hello.txt >> hello2.txt
-~$ ./test.sh >> test.echo
+ cat hello.txt >> hello2.txt
+ ./test.sh >> test.echo
 
 ##3. ( 2> ) 错误重定向
 用法：命令 2>文件名
 特性：覆盖
 典型应用：
-~$ ./test.sh >> test.error
+ ./test.sh >> test.error
 
 ##4. ( 2>> ) 错误重定向输出符号
 用法：命令 2>>文件名
 特性：错误信息的追加
 典型应用：
-~$ ./test.sh 2>>  test.error
+ ./test.sh 2>>  test.error
 
 ##5. ( | ) 管道符号
 用法：命令1 | 命令2
 特性：上一个的命令输出作为下一个命令的输入
 典型应用：
-~$ ps -ef | grep root
+ ps -ef | grep root
 ( * ) 匹配任意字符
 ( ? ) 匹配任意一个字符
 
@@ -38,13 +38,13 @@
 用法：命令1 &
 特性：关闭当前终端窗口，程序仍在运行
 典型应用：
-~$ ./test.sh &
+ ./test.sh &
 
 ##7. ( && ) 连接多条命令
 用法：命令1 && 命令2
 特性：如果命令1执行成功，继续执行命令2；否则，不执行命令2.
 典型应用：
-~$ apt-get update && apt-get dist-upgrade
+ apt-get update && apt-get dist-upgrade
 
 ##8. ( || ) 逻辑或
 用法：命令1 || 命令2 
@@ -80,6 +80,23 @@
 
 ##19. ( {} ) 变量分离
 
+##20. 标准输入输出：
+	/dev/null:	表示空设备文件
+	0:	表示stdin标准输入
+	1:	表示stdout标准输出
+	2:	表示stderr标准错误
+##21. command 2>&1
+标准错误输出也重定向到标准输出，（为和不是2>1,简单点说&相当于标准输入出的引用，防止stdout被stderr覆盖并加快速度，http://blog.csdn.net/ggxiaobai/article/details/53507530）
+
+##二、程序
+##1. stdbuf 
+	用法：stdbuf [Options] COMMAND
+	功能：运行COMMAND，并修改程序的标准流操作。
+	Options:
+		-i, --input=MODE:调整输入流
+		-o, --output=MODE:调整输出流
+		-e, --ERROR=MODE:调整错误流
+		（MODE='L'时，表示行缓冲，但对-i无效，如果MODEL=“0”（零），数据不会缓冲，立即输出或输入，或者一个数字，表示缓冲区大小（单位B，例如缓冲区为1KB时MODE=1024））
 ##2. scp
 	是 secure copy的缩写, scp是linux系统下基于ssh登陆进行安全的远程文件拷贝命令。linux的scp命令可以在linux服务器之间复制文件和目录，例如：在A服务器上操作，将B服务器上/home/lk/目录下所有的文件全部复制到本地的/root目录下，命令为：scp -r root@43.224.34.73:/home/lk /root。
 	
@@ -87,12 +104,12 @@
 	是linux下的一个文本输出命令，通常是用于观看某个文件的内容的；
 	cat主要有三大功能：
 	1.一次显示整个文件。
-	$ cat   filename
+	 cat   filename
 	2.从键盘创建一个文件。
-	$ cat  >  filename
+	 cat  >  filename
 	只能创建新文件,不能编辑已有文件.
 	3.将几个文件合并为一个文件。
-	$cat   file1   file2  > file
+	cat   file1   file2  > file
 	cat具体命令格式为 : cat [-AbeEnstTuv] [--help] [--version] fileName
 ##4. export
 	功能说明：设置或显示环境变量。
@@ -110,3 +127,4 @@
 	查看进程情况，列出系统中当前运行的进程，所列出的进程是执行ps命令这个时刻正在运行的进程。
 ##9. wc
 	Linux系统中的wc(Word Count)命令的功能为统计指定文件中的字节数、字数、行数，并将统计结果显示输出。
+		
