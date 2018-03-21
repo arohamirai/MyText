@@ -1,3 +1,5 @@
+
+
 #1. Affine Transform
 *表示 2D 仿射变换，它执行从 2D 坐标到其他 2D 坐标的线性映射，保留了线的“直线性”和“平行性”。可以使用一系列平移 (translation)、缩放 (scale)、翻转 (flip)、旋转 (rotation) 和错切 (shear) 来构造仿射变换。
 *6个自由度
@@ -15,3 +17,4 @@
 #4. similarity transform
 * 相似变换，等距变换+均匀缩放
 * 4 个自由度
+http://blog.csdn.net/u014096352/article/details/53526747
