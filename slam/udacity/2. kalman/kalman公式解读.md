@@ -1,4 +1,5 @@
-#一. 协方差公式
+#<center> Kalman Filter Note </center>
+#一、 协方差公式
 若向量$x$的协方差为$\Sigma$，则Ax的协方差为$A\Sigma A^T$
 \begin{equation} 
 \begin{split} 
@@ -6,8 +7,7 @@ Cov(x) &= \Sigma\\
 Cov(\color{firebrick}{\mathbf{A}}x) &= \color{firebrick}{\mathbf{A}} \Sigma \color{firebrick}{\mathbf{A}}^T 
 \end{split} \label{covident} 
 \end{equation}
-
-# 二. 预测（predict）
+# 二、 预测（predict）
 ##1. 运动描述
 最简单的情况，机器人以一定速度匀速运动，预测方程为：
 \begin{split} 
@@ -203,10 +203,10 @@ filter(x, P)
 
 ```
 
-#五、理论补充
+#七、理论补充
 ##1. 高斯相乘
 两个高斯分布相乘，其结果是一个新的高斯分布。
-考虑1d情况，有两个已知高斯分布，其参数分布为($\mu_1$, $sigma_1$)和($\mu_2$, $sigma_2$)，相乘结果如下：
+考虑1d情况，有两个已知高斯分布，其参数分布为($\mu_1$, $\sigma_1$)和($\mu_2$, $\sigma_2$)，相乘结果如下：
 <center>![image](https://ws1.sinaimg.cn/large/006H1aMCly1fpy4jhlu1hj30gd0aldfx.jpg)</center>
 
 \begin{equation} \label{fusionformula} 
