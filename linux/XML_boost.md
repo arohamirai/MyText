@@ -13,8 +13,11 @@ http://www.technical-recipes.com/2014/using-boostproperty_tree/
 ···
 	std:;string map_filepath = argv[1];
     boost::property_tree::ptree pt;
-    boost::property_tree::read_xml(map_filepath, pt);	
-	 if (pt.empty())
+	try
+	{
+	boost::property_tree::read_xml(map_filepath, pt);	
+	}
+	catch(std::exception& e)
     {
         printf("Load %s map.xml failed!", map_filepath.c_str());
         return false;
