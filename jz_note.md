@@ -92,4 +92,26 @@ tf2::fromMsg(initial_pose_, base2world);
     ++iter_z;
   }
 ```
+##4. Matlab中四元数、欧拉角、旋转矩阵的变换函数
+```
+// 用R表示旋转矩阵，yaw pitch roll分别表示Z　Y　X轴的转角，q=[q0,q1,q2,q3]'表示单位四元数，q0表示w
+// S为旋转顺序，取值：'ZYX','XYZ'...
+// r 表示欧拉角
+// 角度均为弧度制
+
+// 欧拉角到旋转矩阵
+R=angle2dcm(r1,r2,r3,S); 
+// 欧拉角到四元数
+[q0 q1 q2 q2]=angle2quat(r1,r2,r3，S);
+
+// 旋转矩阵到欧拉角
+[r2,r2,r3]=dcm2angle(R, S);
+// 旋转矩阵到四元数
+[q0 q1 q2 q2]=dcm2quat(R);
+
+// 四元数到旋转矩阵
+R=quat2dcm([q0 q1 q2 q3]);
+// 四元数到欧拉角
+[r1,r2,r3]=quat2angle([q0 q1 q2 q2]，S);
+```
 
