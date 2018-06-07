@@ -47,7 +47,6 @@ Eigen::Affine3d base2world;
 // 转换
 tf2::fromMsg(initial_pose_, base2world);
 ```
-
 ##3. ros中时间
 1. `ros::Time(0)` 表示最新时间，但如果这是传给`lookupTransform`函数的话，得到的结果时间戳为0，所以最好避免用`ros::Time(0)`，一律用`ros::Time::now()`.
 2. ros时间变换成以秒为单位：`ros::Time::now().toSec()`，求以秒为单位的时间间隔类似，只要把`ros::Time`类型的时间相减，再做`.toSec()`操作。
@@ -94,7 +93,7 @@ tf2::fromMsg(initial_pose_, base2world);
 ```
 ##4. Matlab中四元数、欧拉角、旋转矩阵的变换函数
 ```
-// 用R表示旋转矩阵，yaw pitch roll分别表示Z　Y　X轴的转角，q=[q0,q1,q2,q3]'表示单位四元数，q0表示w
+// 用R表示旋转矩阵，yaw pitch roll分别表示Z　Y　X轴的转角，q=[q0,q1,q2,q3]'表示单位四元数，排序方式(w,x,y,z)
 // S为旋转顺序，取值：'ZYX','XYZ'...
 // r 表示欧拉角
 // 角度均为弧度制
@@ -114,4 +113,73 @@ R=quat2dcm([q0 q1 q2 q3]);
 // 四元数到欧拉角
 [r1,r2,r3]=quat2angle([q0 q1 q2 q2]，S);
 ```
+#2018.06.07
+##1. Eigen 中各种变换关系
+```
+// Eigen 几何模块
+#include <Eigen/Geometry>
 
+/********** 类型定义 **********/
+Eigen::Vector3d euler_angles;			// 欧拉角
+Eigen::AngleAxisd rotation_vector;		// 旋转向量
+Eigen::Matrix3d rotation_matrix;		// 旋转矩阵
+Eigen::Quaterniond q;					// 四元数，排序方式(w,x,y,z)
+
+/********** 欧拉角 **********/
+// 欧拉角 ————> 旋转向量
+Eigen::AngleAxisd(euler_angles, ::Eigen::Vector3d::UnitZ())		// 此处绕Z旋转
+// 欧拉角 ————>  旋转向量 ————> 旋转矩阵
+Eigen::AngleAxisd(euler_angles, ::Eigen::Vector3d::UnitZ())		// 此处绕Z旋转
+rotation matrix =rotation_vector.matrix();
+// 欧拉角组 ————> 旋转向量组 ————> 旋转矩阵
+euler_angles(yaw,pitch,roll);				// 此处yaw,pitch,roll旋转轴分别为Z,Y,X
+rotation_matrix = Eigen::AngleAxisd(euler_angles[0], ::Eigen::Vector3d::UnitZ())
+    * Eigen::AngleAxisd(euler_angles[1], ::Eigen::Vector3d::UnitY())
+    * Eigen::AngleAxisd(euler_angles[2], ::Eigen::Vector3d::UnitX());
+// 欧拉角 ————> 旋转向量组 ————> 旋转矩阵 ————> 四元数
+euler_angles(yaw,pitch,roll);				// 此处yaw,pitch,roll旋转轴分别为Z,Y,X
+rotation_matrix = Eigen::AngleAxisd(euler_angles[0], ::Eigen::Vector3d::UnitZ())
+    * Eigen::AngleAxisd(euler_angles[1], ::Eigen::Vector3d::UnitY())
+    * Eigen::AngleAxisd(euler_angles[2], ::Eigen::Vector3d::UnitX());
+q = Eigen::Quaterniond ( rotation_matrix );
+
+
+/********** 旋转向量 **********/
+// 旋转向量 ————> 欧拉角
+rotation_vector1.angle();
+// 旋转向量 ————> 旋转矩阵
+rotation matrix =rotation_vector.matrix();
+// 旋转向量 ————>四元数
+q = Eigen::Quaterniond ( rotation_vector );
+// 旋转向量组 ————> 旋转矩阵
+euler_angles(yaw,pitch,roll);				// 此处yaw,pitch,roll旋转轴分别为Z,Y,X
+rotation_matrix = Eigen::AngleAxisd(euler_angles[0], ::Eigen::Vector3d::UnitZ())
+    * Eigen::AngleAxisd(euler_angles[1], ::Eigen::Vector3d::UnitY())
+    * Eigen::AngleAxisd(euler_angles[2], ::Eigen::Vector3d::UnitX());
+// 旋转向量组 ————> 旋转矩阵 ————> 四元数
+rotation_matrix = Eigen::AngleAxisd(euler_angles[0], ::Eigen::Vector3d::UnitZ())
+    * Eigen::AngleAxisd(euler_angles[1], ::Eigen::Vector3d::UnitY())
+    * Eigen::AngleAxisd(euler_angles[2], ::Eigen::Vector3d::UnitX());
+q = Eigen::Quaterniond ( rotation_matrix );
+
+
+/********** 旋转矩阵 **********/
+// 旋转矩阵 ————>欧拉角组
+Eigen::Vector3d euler_angles = rotation_matrix.eulerAngles ( 2,1,0 ); // ZYX顺序，即roll pitch yaw顺序
+// 旋转矩阵 ————>旋转向量
+rotation_vector.fromRotationMatrix(rotation_matrix);		// AngleAxisd类实现的方法，rotation_vector包含旋转向量轴的信息
+// 旋转矩阵 ————>四元数
+q = Eigen::Quaterniond ( rotation_matrix );
+
+
+/********** 四元数 **********/
+// 四元数 ————> 旋转矩阵 ————>旋转向量 ———> 欧拉角
+rotation_matrix = q.toRotationMatrix();
+rotation_vector.fromRotationMatrix(rotation_matrix);		// AngleAxisd类实现的方法，rotation_vector包含旋转向量轴的信息
+rotation_vector1.angle();
+// 四元数 ————> 旋转矩阵 ————> 旋转向量
+rotation_matrix = q.toRotationMatrix();
+rotation_vector.fromRotationMatrix(rotation_matrix);		// AngleAxisd类实现的方法，rotation_vector包含旋转向量轴的信息
+// 四元数 ————> 旋转矩阵
+rotation_matrix = q.toRotationMatrix();
+```
