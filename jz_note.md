@@ -136,7 +136,7 @@ euler_angles(yaw,pitch,roll);				// 此处yaw,pitch,roll旋转轴分别为Z,Y,X
 rotation_matrix = Eigen::AngleAxisd(euler_angles[0], ::Eigen::Vector3d::UnitZ())
     * Eigen::AngleAxisd(euler_angles[1], ::Eigen::Vector3d::UnitY())
     * Eigen::AngleAxisd(euler_angles[2], ::Eigen::Vector3d::UnitX());
-// 欧拉角 ————> 旋转向量组 ————> 旋转矩阵 ————> 四元数
+// 欧拉角组 ————> 旋转向量组 ————> 旋转矩阵 ————> 四元数
 euler_angles(yaw,pitch,roll);				// 此处yaw,pitch,roll旋转轴分别为Z,Y,X
 rotation_matrix = Eigen::AngleAxisd(euler_angles[0], ::Eigen::Vector3d::UnitZ())
     * Eigen::AngleAxisd(euler_angles[1], ::Eigen::Vector3d::UnitY())
