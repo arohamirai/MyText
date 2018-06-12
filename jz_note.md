@@ -114,7 +114,7 @@ R=quat2dcm([q0 q1 q2 q3]);
 [r1,r2,r3]=quat2angle([q0 q1 q2 q2]，S);
 ```
 #2018.06.07
-##1. Eigen 中各种变换关系
+## 1. Eigen 中各种变换关系
 ```
 // Eigen 几何模块
 #include <Eigen/Geometry>
@@ -183,3 +183,6 @@ rotation_vector.fromRotationMatrix(rotation_matrix);		// AngleAxisd类实现的�
 // 四元数 ————> 旋转矩阵
 rotation_matrix = q.toRotationMatrix();
 ```
+# 2018.06.11
+##1. size_t 类型格式化输出符
+[%zu 或 %lu](https://www.sigmainfy.com/blog/size_t_printf.html)
