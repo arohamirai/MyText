@@ -25,6 +25,8 @@
 ##2. ros查询tf后变换关系相乘
 1. ros 查询到的tf是`geometry_msgs::TransformStamped`类型，不能直接进行乘法运算，必须先转换成`Eigen::Affine3d`类型才能进行直接乘法，转换代码如下：
 ```
+	#include"tf2_eigen/tf2_eigen.h"
+	
 	geometry_msgs::TransformStamped base2odom_stamped;
 	try
       {
@@ -95,6 +97,7 @@ tf2::fromMsg(initial_pose_, base2world);
 ```
 // 用R表示旋转矩阵，yaw pitch roll分别表示Z　Y　X轴的转角，q=[q0,q1,q2,q3]'表示单位四元数，排序方式(w,x,y,z)
 // S为旋转顺序，取值：'ZYX','XYZ'...
+// 但凡涉及到S的地方，参数排序跟S相同，例如：angle2quat(r1,r2,r3，S);如果S='ZYX'，则r1 = yaw, r2 = pitch, r3 = roll
 // r 表示欧拉角
 // 角度均为弧度制
 
@@ -127,10 +130,10 @@ Eigen::Quaterniond q;					// 四元数，排序方式(w,x,y,z)
 
 /********** 欧拉角 **********/
 // 欧拉角 ————> 旋转向量
-Eigen::AngleAxisd(euler_angles, ::Eigen::Vector3d::UnitZ())		// 此处绕Z旋转
+rotation_vector = Eigen::AngleAxisd(euler_angles, ::Eigen::Vector3d::UnitZ())		// 此处绕Z旋转
 // 欧拉角 ————>  旋转向量 ————> 旋转矩阵
-Eigen::AngleAxisd(euler_angles, ::Eigen::Vector3d::UnitZ())		// 此处绕Z旋转
-rotation matrix =rotation_vector.matrix();
+rotation_vector = Eigen::AngleAxisd(euler_angles, ::Eigen::Vector3d::UnitZ())		// 此处绕Z旋转
+rotation_matrix =rotation_vector.matrix();
 // 欧拉角组 ————> 旋转向量组 ————> 旋转矩阵
 euler_angles(yaw,pitch,roll);				// 此处yaw,pitch,roll旋转轴分别为Z,Y,X
 rotation_matrix = Eigen::AngleAxisd(euler_angles[0], ::Eigen::Vector3d::UnitZ())
@@ -146,7 +149,7 @@ q = Eigen::Quaterniond ( rotation_matrix );
 
 /********** 旋转向量 **********/
 // 旋转向量 ————> 欧拉角
-rotation_vector1.angle();
+rotation_vector.angle();
 // 旋转向量 ————> 旋转矩阵
 rotation matrix =rotation_vector.matrix();
 // 旋转向量 ————>四元数
@@ -184,5 +187,51 @@ rotation_vector.fromRotationMatrix(rotation_matrix);		// AngleAxisd类实现的�
 rotation_matrix = q.toRotationMatrix();
 ```
 # 2018.06.11
-##1. size_t 类型格式化输出符
+## 1. size_t 类型格式化输出符
 [%zu 或 %lu](https://www.sigmainfy.com/blog/size_t_printf.html)
+
+#2018.06.12
+## 1. opencv图像类型和ros图像类型转换
+```
+// ros to opencv
+cv::Mat image_cv;
+sensor_msgs::CompressedImage image_ros_Compress;
+
+cv_bridge::CvImagePtr p_image;
+p_image = cv_bridge::toCvCopy(image_ros_Compress,
+                                "mono8");
+image_cv = p_image->image;
+// or
+sensor_msgs::Image image_ros;
+cv_bridge::CvImagePtr p_image = cv_bridge::toCvCopy(image_ros,
+                                                      "mono16");
+image_cv = p_image->image;
+
+// opencv to ros
+sensor_msgs::CompressedImagePtr p_comressed_image_msg;
+p_comressed_image_msg =
+    cv_bridge::CvImage(std_msgs::Header(), "mono8", image_cv)
+	.toCompressedImageMsg();
+// or
+ sensor_msgs::ImagePtr p_image_msg;
+  p_image_msg =
+      cv_bridge::CvImage(std_msgs::Header(), "mono16", image_cv).toImageMsg();
+
+
+```
+# 2018.06.14
+1. circusctl start/stop [node_name] 可以代替网页5000端口开启/关闭节点
+
+# 2018.07.03
+1. 多播/组播(multicast)
+多播的地址是特定的，D类地址用于多播。D类IP地址就是多播IP地址，即224.0.0.0至239.255.255.255之间的IP地址，并被划分为局部连接多播地址、预留多播地址和管理权限多播地址3类： 
+局部多播地址：在224.0.0.0～224.0.0.255之间，这是为路由协议和其他用途保留的地址，路由器并不转发属于此范围的IP包。 
+预留多播地址：在224.0.1.0～238.255.255.255之间，可用于全球范围（如Internet）或网络协议。 
+管理权限多播地址：在239.0.0.0～239.255.255.255之间，可供组织内部使用，类似于私有IP地址，不能用于Internet，可限制多播范围。
+
+#2018.07.05
+1. ibvs_constrained 中相机projWidth, projHeight, objWidth, objHeight的参数选择过程：
+	* 选择objWidth或objHeight, 另一个根据相机图像长宽比例换算
+	* objWidth, objHeight 乘上一个比例2.778, 得到projWidth, projHeight, 2.778可以认为是视野与算法速度的最佳分辨率
+	* 算出的projWidth, projHeight取整到4的倍数，最好是8的倍数，为了字节对齐，再除于2.778， 反算objWidth, objHeight
+	* 重复上述过程，直到视野满足要求
