@@ -134,3 +134,25 @@ tag是一个让人容易记住的有意义的名字，是指向某个commit的�
 	3.	如果合并有冲突，则解决冲突，并在本地提交；
 	4.	没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
 	5.	如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream <branch-name> origin/<branch-name>。
+
+问题六：同意终端多git帐号设置
+	1. 	取消全局user.name 和user.email设置：删除 ~/.gitconfig 文件中的[user]字段内容；
+	2.	为不同的git服务器生成不同的ssh密钥文件，例如：为github生成的ssh密钥放在 ~/.ssh/github/ 文件夹下， 为gitlab生成的ssh密钥放在 ~/.ssh/gitlab/文件夹下；
+	3.	让git识别到多个ssh密钥：ssh-add <id_rsa_file_path>；若失败，先执行：ssh-agent bash，再ssh-add;
+	4.	让git选择对应的ssh密钥:~/.ssh/ 文件夹下新建config 文件，按下面格式添加对应的git 服务器。多个git 服务器添加多份。
+```
+Host git@github.com	// git@github.com的别名，这里用git@github.com代替，相当与没用别名，如果改成其他，例如Host github, 则以后从github.com 克隆repo时，可以简写成 github:arohamirai/xxx.git(原始命令是：git@github.com:arohamirai/xxx.git)
+ HostName https://github.com			// git 服务器地址
+ User git					// 用户，默认用git就好
+ IdentityFile ~/.ssh/github/id_rsa		// ssh文件地址
+```
+
+问题七： git添加代理
+	~/.gitconfig 文件中添加下列字段，将使用本地1080端口进行代理(shadowsocks 的默认代理端口)
+```
+[http]
+	proxy = socks5://127.0.0.1:1080
+[https]
+	proxy = socks5://127.0.0.1:1080
+```
+	
