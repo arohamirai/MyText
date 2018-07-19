@@ -95,7 +95,7 @@ tf2::fromMsg(initial_pose_, base2world);
 ```
 ##4. Matlab中四元数、欧拉角、旋转矩阵的变换函数
 ```
-// 用R表示旋转矩阵，yaw pitch roll分别表示Z　Y　X轴的转角，q=[q0,q1,q2,q3]'表示单位四元数，排序方式(w,x,y,z)
+// 用R表示旋转矩阵，yaw pitch roll分别表示Z　Y　X轴的转角(需要注意的是，两者并不一定是这种对应关系)，q=[q0,q1,q2,q3]'表示单位四元数，排序方式(w,x,y,z)
 // S为旋转顺序，取值：'ZYX','XYZ'...
 // 但凡涉及到S的地方，参数排序跟S相同，例如：angle2quat(r1,r2,r3，S);如果S='ZYX'，则r1 = yaw, r2 = pitch, r3 = roll
 // r 表示欧拉角
@@ -235,3 +235,62 @@ p_comressed_image_msg =
 	* objWidth, objHeight 乘上一个比例2.778, 得到projWidth, projHeight, 2.778可以认为是视野与算法速度的最佳分辨率
 	* 算出的projWidth, projHeight取整到4的倍数，最好是8的倍数，为了字节对齐，再除于2.778， 反算objWidth, objHeight
 	* 重复上述过程，直到视野满足要求
+
+#2018.07.06
+ros subscribe的实现函数必须是const参数，如下：
+```
+void FollowLineRecord::handleResult(const visual_servo_msgs::IbvsConstrainedResultConstPtr &result)
+```
+
+# 2018.07.19
+	1. 已知平移向量和四元数，求Eigen::Affine3d 类型初始化：
+	```
+	Eigen::Quaterniond q;//已知
+	Eigen::Vector3d t;//已知
+	Eigen::Affine3d translate;// 待求
+	
+	translate.setIdentity();
+    translate.prerotate(q1);
+    translate.pretranslate(t1);
+	```
+	2. Eigen的数据使用时最好都先初始化下，或setIdentity()下；
+	
+	3. 当不知道旋转轴时，又想知道旋转角度，可以用SVD方式分解，自动求解旋转轴
+	```
+	Eigen::Affine3d translate;// 已知
+	double angle； // 待求
+	Eigen::AngleAxisd angle_1 = Eigen::AngleAxisd(base2base.rotation());
+	angle = angle_1.angle();
+	```
+	
+	4. 强制杀死僵尸程序:使用 kill -9 <pid> 系统命令
+	
+	```
+	/*
+	系统命令：ps aux | grep apriltag_detector | grep -v grep | awk '{print $2}'
+	ps aux：显示所有进程，详细信息
+	grep apriltag_detector： 过滤， 只留下apriltag_detector 进程信息
+	grep -v grep： 忽略掉grep进程
+	awk： 数据流处理
+	print $2：打印 每行中的第二个字段
+	*/
+	
+	
+	
+			FILE* fp2;
+            int pid;
+            char pid_buf[PIPE_BUF];
+            if ((fp2 = popen("ps aux | grep apriltag_detector | grep -v grep | awk '{print $2}'", "r")) == NULL)
+            {
+              ROS_ERROR("popen failed!");
+              // err_quit("popen");
+            }
+            while ((fgets(pid_buf, PIPE_BUF, fp2)) != NULL)
+            {
+              pid = atoi(pid_buf);
+              std::string command = "kill -9 " + std::to_string(pid);
+              status = system(command.c_str());
+              assert(status != -1);
+            }
+            pclose(fp2);
+	```
