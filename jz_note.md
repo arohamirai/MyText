@@ -294,3 +294,33 @@ void FollowLineRecord::handleResult(const visual_servo_msgs::IbvsConstrainedResu
             }
             pclose(fp2);
 	```
+# 2018.7.23
+	1. `Eigen::Isometry2d `二维旋转初始化
+	```
+		Eigen::Isometry2d laser2template_;
+		laser2template_.setIdentity();
+		laser2template_.prerotate(Eigen::Rotation2Dd(output_.x[2]));
+		laser2template_.pretranslate(
+        Eigen::Vector2d(output_.x[0], output_.x[1]));
+	```
+	
+	2. `Eigen::Isometry3d` 转`Eigen::Isometry2d`
+	```
+		Eigen::Affine2d laser2base_;
+		Eigen::Affine3d laser2base = tf2::transformToEigen(laser2base_stamped);
+		double yaw = GetYaw(Eigen::Quaterniond(laser2base.rotation()));
+
+		laser2base_.setIdentity();
+		laser2base_.prerotate(Eigen::Rotation2Dd(yaw));
+		laser2base_.pretranslate(
+        Eigen::Vector2d(laser2base(0, 3), laser2base(1, 3)));
+	```
+	3. [ROS参数服务器有两个版本，分别为:](https://www.ncnynl.com/archives/201702/1295.html)
+	（1）NodeHandle版本，ros::NodeHandle::getParam()，参数相对于NodeHandle的命名空间进行解析;
+	（2）bare版本：ros::param::get()， 参数相对于节点的命名空间进行解析;
+	```
+	//
+	ros::NodeHandle::getParam();
+	
+	
+	```
