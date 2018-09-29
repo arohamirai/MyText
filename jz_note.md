@@ -321,6 +321,40 @@ void FollowLineRecord::handleResult(const visual_servo_msgs::IbvsConstrainedResu
 	```
 	//
 	ros::NodeHandle::getParam();
-	
-	
 	```
+	
+# 2018.7.26
+	1. ros动态参数文件找不到.h文件:
+	首先看是不是数据类型没有拼对，如果对，则在CMakeLists.txt 中，add_executable(node_name ${PROJECT_SOURCE_DIR}/src/node_name.cpp) 后面添加add_dependencies(node_name ${PROJECT_NAME}_gencfg)，表示需要依赖动态参数配置文件，例如
+	```
+	add_executable(scan_filter ${PROJECT_SOURCE_DIR}/src/scan_filter.cpp)
+	target_link_libraries(scan_filter ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OpenCV_LIBRARIES})
+	# make sure configure headers are built before any node using them
+	add_dependencies(scan_filter ${PROJECT_NAME}_gencfg)
+	```
+	2. ros找不到msg的头文件：
+	首先看是不是数据类型没有拼对，如果对，则在CMakeLists.txt 中，add_executable(node_name ${PROJECT_SOURCE_DIR}/src/node_name.cpp) 或add_library(...) 后面添加add_dependencies(node_name ${PROJECT_NAME}_gencpp)，表示需要本项目的msg文件，例如
+	```
+	add_library(CNatNetClient ${PROJECT_SOURCE_DIR}/src/CNatNetClient.cpp)
+add_dependencies(CNatNetClient ${PROJECT_NAME}_gencpp)
+
+add_executable(sensors_check_server src/SensorsCheckServer.cpp)
+target_link_libraries(sensors_check_server
+${catkin_LIBRARIES}
+CNatNetClient
+)
+add_dependencies(sensors_check_server ${PROJECT_NAME}_gencpp)
+	```
+	3. ros找不到action的头文件：
+	首先看是不是数据类型没有拼对，如果对，则在CMakeLists.txt 中，add_executable(node_name ${PROJECT_SOURCE_DIR}/src/node_name.cpp) 或add_library(...) 后面添加add_dependencies(node_name ${${PROJECT_NAME}_EXPORTED_TARGETS})，表示需要本项目的action文件，例如
+	```
+	add_dependencies(sensors_check_server
+    ${PROJECT_NAME}_gencpp
+    ${${PROJECT_NAME}_EXPORTED_TARGETS}
+    ${catkin_EXPORTED_TARGETS})
+	```
+
+	4. boost:bind()当绑定类成员函数时，第二个参数一定是类对象的指针，即this指针，只有这样，boost::bind()才能找到成员函数的地址。静态成员函数除外。
+	
+# 2018.8.6
+	1. 相机第一帧参数接近单位矩阵
