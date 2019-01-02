@@ -1,0 +1,9 @@
+ 在launch 文件中启动node 时，加入以下参数：
+```
+// before
+<node pkg="sensors_check" type="sensors_check_server" name="sensors_check_server" output="screen">
+
+// after
+// xterm 是一般系统都会自带的终端
+<node pkg="sensors_check" type="sensors_check_server" name="sensors_check_server" output="screen"  launch-prefix="valgrind">
+```
