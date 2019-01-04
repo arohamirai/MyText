@@ -1,0 +1,13 @@
+1. ros 程序编译时，优化类型为-o2, 这样的话会保留符号表，但速度并没有影响；
+2. 在launch 文件中启动node 时，加入以下参数：
+```
+// before
+<node pkg="sensors_check" type="sensors_check_server" name="sensors_check_server" output="screen">
+
+// after
+// xterm 是一般系统都会自带的终端
+<node pkg="sensors_check" type="sensors_check_server" name="sensors_check_server" output="screen"  launch-prefix="xterm -e gdb --args">
+```
+这样的话就会从gdb中启动ros节点
+
+3. 在gdb窗口输入r运行，即可跟踪
