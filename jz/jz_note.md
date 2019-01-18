@@ -358,3 +358,87 @@ add_dependencies(sensors_check_server ${PROJECT_NAME}_gencpp)
 	
 # 2018.8.6
 	1. 相机第一帧参数接近单位矩阵
+
+# 2018.08.14
+## 1. 三维旋转矩阵的全公式形式：
+```
+syms yaw pitch roll
+rot_x = [1 0 0 0; 0 cos(roll) -sin(roll) 0; 0 sin(roll) cos(roll) 0; 0 0 0 1];
+rot_y = [cos(pitch) 0 sin(pitch) 0; 0 1 0 0; -sin(pitch) 0 cos(pitch) 0; 0 0 0 1];
+rot_z = [cos(yaw) -sin(yaw) 0 0; sin(yaw) cos(yaw) 0 0; 0 0 1 0; 0 0 0 1];
+
+rot_zyx = rot_z * rot_y * rot_x
+```
+![image](http://ws4.sinaimg.cn/large/006H1aMCly1fu9e133xgdj30s50d9wez.jpg)
+
+# footprint
+EMMA200的footprint:
+[[-0.42,-0.29],[-0.42,0.29],[0.42,0.29],[0.42,-0.29]]
+
+# 2018.10.10
+## 1. ros中坐标变换相关定义
+parent/frame_id：表示父坐标
+child/child_frame_id:表示子坐标
+
+在tf树上，箭头由parent指向child，但在发布变换关系时，值应该是child2parent的值，也就是说，两者的箭头应该是相反的。例如
+```
+// 值因该是servo_target2base_footprint
+vpTranslationVector t;
+vpQuaternionVector q;
+eMo.extract(t);
+eMo.extract(q);
+geometry_msgs::TransformStamped stamped_transform;
+stamped_transform.header.stamp = ros::Time::now();
+stamped_transform.header.frame_id = "base_footprint";
+stamped_transform.child_frame_id = "servo_target";
+stamped_transform.transform.translation.x = t[0]*0.001;
+stamped_transform.transform.translation.y = t[1]*0.001;
+stamped_transform.transform.translation.z = t[2]*0.001;
+stamped_transform.transform.rotation.x = q.x();
+stamped_transform.transform.rotation.y = q.y();
+stamped_transform.transform.rotation.z = q.z();
+stamped_transform.transform.rotation.w = q.w();
+```
+
+## 2. rviz 显示轨迹
+rviz中订阅nav_msgs::Odometry消息，可以记录轨迹，而且frame_id和child_frame_id间不需要tf,但这时可能需要在rviz中手填fix_frame为frame_id。
+
+示例
+```
+// fix_frame:test_world
+void pubTestOdom(const vpHomogeneousMatrix& wMe, const geometry_msgs::Twist& vel)
+{
+  geometry_msgs::Pose base2world_pose;
+  nav_msgs::Odometry base2world_odom;
+  vpTranslationVector t;
+  vpQuaternionVector q;
+
+  wMe.extract(t);
+  wMe.extract(q);
+  base2world_pose.position.x = t[0] * 0.001;
+  base2world_pose.position.y = t[1] * 0.001;
+  base2world_pose.position.z = t[2] * 0.001;
+  base2world_pose.orientation.x = q.x();
+  base2world_pose.orientation.y = q.y();
+  base2world_pose.orientation.z = q.z();
+  base2world_pose.orientation.w = q.w();
+
+  base2world_odom.header.stamp = ros::Time::now();
+  base2world_odom.header.frame_id = "test_world";
+  base2world_odom.child_frame_id = "test_base";
+  base2world_odom.pose.pose = base2world_pose;
+  base2world_odom.twist.twist = vel;
+
+  debug_base_odom_pub_.publish(base2world_odom);
+}
+```
+
+## 3. OpenGL变换框架
+![image](http://wx1.sinaimg.cn/large/006H1aMCgy1fwq11rkddzj30rs0hf3yq.jpg)
+	
+# 2019.01.15
+   数据变换
+   ```
+#include <tf_conversions/tf_eigen.h>
+#include <eigen_conversions/eigen_msg.h>
+   ```
