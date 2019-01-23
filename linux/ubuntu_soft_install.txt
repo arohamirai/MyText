@@ -253,6 +253,12 @@ sudo apt-get install open-vm-tools-desktop
 maybe:
 sudo apt-get installopen-vm-tools-dkms
 
+
+17. sunpinyin
+sudo apt-get install ibus-sunpinyin
+重启电脑或者重新登陆当前用户；
+打开系统设置中text entry settings选项，点击左下加号，输入pinyin选择chinese（sunpinyin），点击add；右侧设置输入法切换快捷键；
+
 	
 
 

@@ -25,7 +25,7 @@ sudo apt-get install build-essentia
 查看可用驱动版本：ubuntu-drivers devices 
 安装推荐驱动版本（上一步带free recommended 后缀）:进入tty1文本模式->关闭图形桌面管理器：
 sudo service lightdm stop
-sudo apt-get install nvidia-381 
+sudo apt-get install nvidia-384 
 #如果所有都完成后无法进入桌面可进入tty1卸载显卡驱动换一个驱动本安装试下
 重启：sudo reboot
 
@@ -49,13 +49,11 @@ sudo ldconfig
 	sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64/
 	sudo chmod a+r /usr/local/cuda/include/cudnn.h
 	sudo chmod a+r /usr/local/cuda/lib64/libcudnn*
-	或：sudo cp cudnn.h /usr/local/cuda/include/    #复制头文件
-		sudo cp lib* /usr/local/cuda/lib64/    #复制动态链接库
-		cd /usr/local/cuda/lib64/
-sudo rm -rf libcudnn.so libcudnn.so.5 #删除原有动态文件	
-		sudo ln -s libcudnn.so.5.0.5 libcudnn.so.5  #生成软衔接
-		sudo ln -s libcudnn.so.5 libcudnn.so      #生成软链接
-		sudo ldconfig   #更新链接库
+	(9.2之后貌似不需要更新软链接)
+	sudo rm -rf libcudnn.so libcudnn.so.5 #删除原有动态文件	
+	sudo ln -s libcudnn.so.5.0.5 libcudnn.so.5  #生成软衔接
+	sudo ln -s libcudnn.so.5 libcudnn.so      #生成软链接
+	sudo ldconfig   #更新链接库
 
 
 
