@@ -442,3 +442,18 @@ void pubTestOdom(const vpHomogeneousMatrix& wMe, const geometry_msgs::Twist& vel
 #include <tf_conversions/tf_eigen.h>
 #include <eigen_conversions/eigen_msg.h>
    ```
+   
+# 2019.01.24
+## 1. ros离线跑bag
+1. launch文件中添加 `/use_sim_time` 字段，设为`true`
+```
+<launch>
+    <param name="/use_sim_time" value="true" />
+	...
+	
+</launch>
+```
+2. 发布时钟
+```
+rosbag play xxx --clock
+```
