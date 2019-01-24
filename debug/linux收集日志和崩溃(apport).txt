@@ -1,0 +1,7 @@
+【apport的使用】
+
+  apport，不用打开ulimit，自动收集dump信息，然后把上传官方服务器给去掉了，
+
+  只留下crash文件在/opt/jz/log/dump下面。信息比core更多一些。
+
+  可以用 sudo apport-cli xxx.crash，查看dump里面的堆栈信息，按V即可。

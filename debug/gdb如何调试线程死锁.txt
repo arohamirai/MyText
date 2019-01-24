@@ -1,0 +1,140 @@
+【示例源码】
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <unistd.h>
+
+pthread_mutex_t mutex_1;
+pthread_mutex_t mutex_2;
+
+void *child1(void* arg)
+{
+    printf("Thread1 is running\n");
+    while (1) {
+        pthread_mutex_lock(&mutex_1);
+        sleep(3);
+        pthread_mutex_lock(&mutex_2);
+        pthread_mutex_unlock(&mutex_2);
+        pthread_mutex_unlock(&mutex_1);
+        sleep(5);
+    }
+}
+
+void *child2(void* arg)
+{
+    printf("Thread2 is running\n");
+    while (1) {
+        pthread_mutex_lock(&mutex_2);
+        sleep(3);
+        pthread_mutex_lock(&mutex_1);
+        pthread_mutex_unlock(&mutex_1);
+        pthread_mutex_unlock(&mutex_2);
+        sleep(5);
+    }
+}
+
+int main()
+{
+    //sleep(10);
+    pthread_mutex_init(&mutex_1, NULL);
+    pthread_mutex_init(&mutex_2, NULL);
+    pthread_t tid1, tid2;
+    pthread_create(&tid1, NULL, child1, NULL);
+    pthread_create(&tid2, NULL, child2, NULL);
+    pthread_join(tid1, NULL);
+    pthread_join(tid2, NULL);
+    return 0;
+}
+
+【操作过程】
+编译:
+gcc thread_test.c -pthread -g
+gdb attach上去
+sudo gdb -pid=6005
+(gdb) i threads
+  Id   Target Id         Frame 
+  1    Thread 0x7fb775f6f700 (LWP 6005) "a.out" 0x00007fb775b7b98d in pthread_join (threadid=140425926706944, thread_return=0x0) at pthread_join.c:90
+  2    Thread 0x7fb7757a8700 (LWP 6006) "a.out" __lll_lock_wait () at ../sysdeps/unix/sysv/linux/x86_64/lowlevellock.S:135
+  3    Thread 0x7fb774fa7700 (LWP 6007) "a.out" __lll_lock_wait () at ../sysdeps/unix/sysv/linux/x86_64/lowlevellock.S:135
+
+有3个线程,切到线程2(LWP 6006)
+(gdb) thread 2
+[Switching to thread 2 (Thread 0x7fb7757a8700 (LWP 6006))]
+#0  __lll_lock_wait () at ../sysdeps/unix/sysv/linux/x86_64/lowlevellock.S:135
+135    ../sysdeps/unix/sysv/linux/x86_64/lowlevellock.S: No such file or directory.
+
+
+看下backtrace
+(gdb) bt
+#0  __lll_lock_wait () at ../sysdeps/unix/sysv/linux/x86_64/lowlevellock.S:135
+#1  0x00007fb775b7cdbd in __GI___pthread_mutex_lock (mutex=0x6010e0 <mutex_2>) at ../nptl/pthread_mutex_lock.c:80
+#2  0x000000000040087a in child1 (arg=0x0) at thread_test.c:15
+#3  0x00007fb775b7a6ba in start_thread (arg=0x7fb7757a8700) at pthread_create.c:333
+#4  0x00007fb7758b03dd in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:109
+从#2看出在child1处出现问题，查看代码
+
+(gdb) l child1
+5    
+6    pthread_mutex_t mutex_1;
+7    pthread_mutex_t mutex_2;
+8    
+9    void *child1(void* arg)
+10    {
+11        printf("Thread1 is running\n");
+12        while (1) {
+13            pthread_mutex_lock(&mutex_1);
+14            sleep(3);
+(gdb) 
+15            pthread_mutex_lock(&mutex_2);
+16            pthread_mutex_unlock(&mutex_2);
+17            pthread_mutex_unlock(&mutex_1);
+18            sleep(5);
+19        }
+20    }
+
+看出15行pthread_mutex_lock(&mutex_2)，在等mutex_2，看下mutex_2的owner是谁
+(gdb) p mutex_2
+$1 = {__data = {__lock = 2, __count = 0, __owner = 6007, __nusers = 1, __kind = 0, __spins = 0, __elision = 0, __list = {__prev = 0x0, __next = 0x0}}, 
+  __size = "\002\000\000\000\000\000\000\000w\027\000\000\001", '\000' <repeats 26 times>, __align = 2}
+__owner = 6007 是线程3，切到线程3
+
+(gdb) thread 3
+[Switching to thread 3 (Thread 0x7fb774fa7700 (LWP 6007))]
+#0  __lll_lock_wait () at ../sysdeps/unix/sysv/linux/x86_64/lowlevellock.S:135
+135    ../sysdeps/unix/sysv/linux/x86_64/lowlevellock.S: No such file or directory.
+
+(gdb) bt
+#0  __lll_lock_wait () at ../sysdeps/unix/sysv/linux/x86_64/lowlevellock.S:135
+#1  0x00007fb775b7cdbd in __GI___pthread_mutex_lock (mutex=0x6010a0 <mutex_1>) at ../nptl/pthread_mutex_lock.c:80
+#2  0x00000000004008ce in child2 (arg=0x0) at thread_test.c:28
+#3  0x00007fb775b7a6ba in start_thread (arg=0x7fb774fa7700) at pthread_create.c:333
+#4  0x00007fb7758b03dd in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:109
+
+(gdb) l child2
+18            sleep(5);
+19        }
+20    }
+21    
+22    void *child2(void* arg)
+23    {
+24        printf("Thread2 is running\n");
+25        while (1) {
+26            pthread_mutex_lock(&mutex_2);
+27            sleep(3);
+(gdb) 
+28            pthread_mutex_lock(&mutex_1);
+29            pthread_mutex_unlock(&mutex_1);
+30            pthread_mutex_unlock(&mutex_2);
+31            sleep(5);
+32        }
+33    }
+34    
+35    int main()
+36    {
+37        //sleep(10);
+
+(gdb) p mutex_1
+$2 = {__data = {__lock = 2, __count = 0, __owner = 6006, __nusers = 1, __kind = 0, __spins = 0, __elision = 0, __list = {__prev = 0x0, __next = 0x0}}, 
+  __size = "\002\000\000\000\000\000\000\000v\027\000\000\001", '\000' <repeats 26 times>, __align = 2}
+__owner = 6006 是线程2
+说明6006（线程2）在等mutex_2, mutex_2被6007（线程3）拿着， 6007（线程3）在等mutex_1，mutex_1被6006（线程2）拿着 成了死锁了。

@@ -1,0 +1,47 @@
+﻿【杀死进程】
+方法一 直接使用进程名
+#pkill 进程名 
+#killall 进程名
+
+方法二 间接使用进程名，直接使用进程id
+1）#kill -9 $(ps -ef|grep 进程名关键字|gawk '$0 !~/grep/ {print $2}' |tr -s '\n' ' ')这个是利用管道和替换将 进程名对应的进程号提出来作为kill的参数。
+2）#kill -9 $(pidof 进程名关键字)
+
+如下操作流程：
+  1）得到进程id
+    pgrep process 假设得到进程id为1234
+  2）杀死进程
+    kill -9 1234 
+    kill -9 $(pidof urg_node)  
+
+【获取进程的线程】
+1、cat /proc/${pid}/status
+
+2、pstree -p ${pid}
+
+3、top -p ${pid} 再按H 或者直接输入 
+   top -bH -d 3 -p ${pid}
+   top -H 
+   -H : Threads toggle
+   加上这个选项启动top，top一行显示一个线程。否则，它一行显示一个进程。
+
+4、ps xH
+   H: Show threads as if they were processes
+   这样可以查看所有存在的线程。
+
+5、ps -mp <PID>
+   m: Show threads after processes
+   这样可以查看一个进程起的线程数。 
+
+
+方法一：PS
+在ps命令中，“-T”选项可以开启线程查看。下面的命令列出了由进程号为<pid>的进程创建的所有线程。
+   ps -T -p <pid>
+
+方法二： Top
+要让top输出某个特定进程<pid>并检查该进程内运行的线程状况：
+   top -H -p <pid>
+
+方法三： Htop
+一个对用户更加友好的方式是，通过htop查看单个进程的线程，它是一个基于ncurses的交互进程查看器。该程序允许你在树状视图中监控单个独立线程。
+要在htop中启用线程查看，请开启htop，然后按<F2>来进入htop的设置菜单。选择“设置”栏下面的“显示选项”，然后开启“树状视图”和“显示自定义线程名”选项。按<F10>退出设置

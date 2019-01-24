@@ -1,0 +1,25 @@
+1、添加Clion启动文件进入环境变量： 
+  sudo vim .bashrc 
+  export PATH=”/opt/Clion/clion-2018.1.3/bin/:$PATH”
+
+  export PATH=”/home/jz/lcl/clion-2018.3/bin:$PATH”
+  
+2、找到ros工程 先catkin_make 编译后生成工程
+
+3、source 你要打开的工程： 
+  source ～/catkin_ws/devel/setup.bash 
+
+4、在终端输入如下：
+   clion.sh
+   启动clion，打开工程中含有CMakeList.txt的目录
+   
+5、选择相应工程既可编译调试，操作方式与vs差不多
+
+
+With your console, go into your ROS workspace and source the respective setup.bash file. for instance: source devel/setup.bash
+Go to the src directory of your workspace.
+Start CLion from the console from your src directory.   for instance: type the command in the terminator: clion.sh
+Close any open projects in CLion and select Import Project from Sources
+Select ONLY the src directory in your workspace for the import.
+If CLion complains about CMakeList.txt already existing simply click Open Project
+CLion will build symbols for several minutes, then you should be ready to go.
