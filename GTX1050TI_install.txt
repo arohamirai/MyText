@@ -34,11 +34,9 @@ sudo apt-get install nvidia-396
 
 
 
+二、cuda9.2安装
 
-
-二、cuda8.0安装
-
-sudo gedit /etc/ld.so.conf  添加 /usr/local/cuda8.0/lib64
+sudo gedit /etc/ld.so.conf  添加 /usr/local/cuda9.2/lib64
 sudo ldconfig
 
 三、cudnn安装
@@ -49,10 +47,10 @@ sudo ldconfig
 	sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64/
 	sudo chmod a+r /usr/local/cuda/include/cudnn.h
 	sudo chmod a+r /usr/local/cuda/lib64/libcudnn*
-	(9.2之后貌似不需要更新软链接)
-	sudo rm -rf libcudnn.so libcudnn.so.5 #删除原有动态文件	
-	sudo ln -s libcudnn.so.5.0.5 libcudnn.so.5  #生成软衔接
-	sudo ln -s libcudnn.so.5 libcudnn.so      #生成软链接
+	cd /usr/local/cuda/lib64/
+	sudo rm -rf libcudnn.so libcudnn.so.7  #删除原有动态文件	
+	sudo ln -s libcudnn.so.7.4.2 libcudnn.so.7  #生成软衔接
+	sudo ln -s libcudnn.so.7 libcudnn.so    #生成软链接
 	sudo ldconfig   #更新链接库
 
 
