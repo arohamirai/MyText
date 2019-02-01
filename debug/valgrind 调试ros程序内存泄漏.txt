@@ -5,5 +5,5 @@
 
 // after
 // xterm 是一般系统都会自带的终端
-<node pkg="sensors_check" type="sensors_check_server" name="sensors_check_server" output="screen"  launch-prefix="valgrind">
+<node pkg="sensors_check" type="sensors_check_server" name="sensors_check_server" output="screen"  launch-prefix="xterm -e valgrind --tool=memcheck --leak-check=full --leak-resolution=high --log-file=valgrind.log">
 ```
