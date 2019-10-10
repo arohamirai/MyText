@@ -278,23 +278,23 @@ void FollowLineRecord::handleResult(const visual_servo_msgs::IbvsConstrainedResu
 
 ​	
 ​	
-			FILE* fp2;
-	        int pid;
-	        char pid_buf[PIPE_BUF];
-	        if ((fp2 = popen("ps aux | grep apriltag_detector | grep -v grep | awk '{print $2}'", "r")) == NULL)
-	        {
-	          ROS_ERROR("popen failed!");
-	          // err_quit("popen");
-	        }
-	        while ((fgets(pid_buf, PIPE_BUF, fp2)) != NULL)
-	        {
-	          pid = atoi(pid_buf);
-	          std::string command = "kill -9 " + std::to_string(pid);
-	          status = system(command.c_str());
-	          assert(status != -1);
-	        }
-	        pclose(fp2);
-	```
+​			FILE* fp2;
+​	        int pid;
+​	        char pid_buf[PIPE_BUF];
+​	        if ((fp2 = popen("ps aux | grep apriltag_detector | grep -v grep | awk '{print $2}'", "r")) == NULL)
+​	        {
+​	          ROS_ERROR("popen failed!");
+​	          // err_quit("popen");
+​	        }
+​	        while ((fgets(pid_buf, PIPE_BUF, fp2)) != NULL)
+​	        {
+​	          pid = atoi(pid_buf);
+​	          std::string command = "kill -9 " + std::to_string(pid);
+​	          status = system(command.c_str());
+​	          assert(status != -1);
+​	        }
+​	        pclose(fp2);
+​	```
 # 2018.7.23
 	1. `Eigen::Isometry2d `二维旋转初始化
 	```
@@ -468,6 +468,15 @@ rosbag play xxx --clock
 
    ```
    rosrun image_view image_view image:=/cam_bottom_docking _do_dynamic_scaling:=true
+   ```
+
+# 2019.10.10
+
+1. 载入rviz预配置文件
+
+   ```
+   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find laser_localiser)/config/sliding_mapper/sliding_map_dynamic.rviz" output="screen">
+   </node>
    ```
 
    
