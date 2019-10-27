@@ -250,8 +250,8 @@ void FollowLineRecord::handleResult(const visual_servo_msgs::IbvsConstrainedResu
 	Eigen::Affine3d translate;// 待求
 	
 	translate.setIdentity();
-    translate.prerotate(q1);
-    translate.pretranslate(t1);
+	translate.prerotate(q1);
+	translate.pretranslate(t1);
 	```
 	2. Eigen的数据使用时最好都先初始化下，或setIdentity()下；
 	
@@ -274,26 +274,27 @@ void FollowLineRecord::handleResult(const visual_servo_msgs::IbvsConstrainedResu
 	awk： 数据流处理
 	print $2：打印 每行中的第二个字段
 	*/
-	
-	
-	
-			FILE* fp2;
-            int pid;
-            char pid_buf[PIPE_BUF];
-            if ((fp2 = popen("ps aux | grep apriltag_detector | grep -v grep | awk '{print $2}'", "r")) == NULL)
-            {
-              ROS_ERROR("popen failed!");
-              // err_quit("popen");
-            }
-            while ((fgets(pid_buf, PIPE_BUF, fp2)) != NULL)
-            {
-              pid = atoi(pid_buf);
-              std::string command = "kill -9 " + std::to_string(pid);
-              status = system(command.c_str());
-              assert(status != -1);
-            }
-            pclose(fp2);
-	```
+
+
+​	
+​	
+​			FILE* fp2;
+​	        int pid;
+​	        char pid_buf[PIPE_BUF];
+​	        if ((fp2 = popen("ps aux | grep apriltag_detector | grep -v grep | awk '{print $2}'", "r")) == NULL)
+​	        {
+​	          ROS_ERROR("popen failed!");
+​	          // err_quit("popen");
+​	        }
+​	        while ((fgets(pid_buf, PIPE_BUF, fp2)) != NULL)
+​	        {
+​	          pid = atoi(pid_buf);
+​	          std::string command = "kill -9 " + std::to_string(pid);
+​	          status = system(command.c_str());
+​	          assert(status != -1);
+​	        }
+​	        pclose(fp2);
+​	```
 # 2018.7.23
 	1. `Eigen::Isometry2d `二维旋转初始化
 	```
@@ -301,7 +302,7 @@ void FollowLineRecord::handleResult(const visual_servo_msgs::IbvsConstrainedResu
 		laser2template_.setIdentity();
 		laser2template_.prerotate(Eigen::Rotation2Dd(output_.x[2]));
 		laser2template_.pretranslate(
-        Eigen::Vector2d(output_.x[0], output_.x[1]));
+	    Eigen::Vector2d(output_.x[0], output_.x[1]));
 	```
 	
 	2. `Eigen::Isometry3d` 转`Eigen::Isometry2d`
@@ -309,11 +310,11 @@ void FollowLineRecord::handleResult(const visual_servo_msgs::IbvsConstrainedResu
 		Eigen::Affine2d laser2base_;
 		Eigen::Affine3d laser2base = tf2::transformToEigen(laser2base_stamped);
 		double yaw = GetYaw(Eigen::Quaterniond(laser2base.rotation()));
-
+	
 		laser2base_.setIdentity();
 		laser2base_.prerotate(Eigen::Rotation2Dd(yaw));
 		laser2base_.pretranslate(
-        Eigen::Vector2d(laser2base(0, 3), laser2base(1, 3)));
+	    Eigen::Vector2d(laser2base(0, 3), laser2base(1, 3)));
 	```
 	3. [ROS参数服务器有两个版本，分别为:](https://www.ncnynl.com/archives/201702/1295.html)
 	（1）NodeHandle版本，ros::NodeHandle::getParam()，参数相对于NodeHandle的命名空间进行解析;
@@ -322,7 +323,7 @@ void FollowLineRecord::handleResult(const visual_servo_msgs::IbvsConstrainedResu
 	//
 	ros::NodeHandle::getParam();
 	```
-	
+
 # 2018.7.26
 	1. ros动态参数文件找不到.h文件:
 	首先看是不是数据类型没有拼对，如果对，则在CMakeLists.txt 中，add_executable(node_name ${PROJECT_SOURCE_DIR}/src/node_name.cpp) 后面添加add_dependencies(node_name ${PROJECT_NAME}_gencfg)，表示需要依赖动态参数配置文件，例如
@@ -355,7 +356,7 @@ add_dependencies(sensors_check_server ${PROJECT_NAME}_gencpp)
 	```
 
 	4. boost:bind()当绑定类成员函数时，第二个参数一定是类对象的指针，即this指针，只有这样，boost::bind()才能找到成员函数的地址。静态成员函数除外。
-	
+
 # 2018.8.6
 	1. 相机第一帧参数接近单位矩阵
 
@@ -443,7 +444,7 @@ void pubTestOdom(const vpHomogeneousMatrix& wMe, const geometry_msgs::Twist& vel
 #include <tf_conversions/tf_eigen.h>
 #include <eigen_conversions/eigen_msg.h>
    ```
-   
+
 # 2019.01.24
 ## 1. ros离线跑bag
 1. launch文件中添加 `/use_sim_time` 字段，设为`true`
@@ -458,3 +459,171 @@ void pubTestOdom(const vpHomogeneousMatrix& wMe, const geometry_msgs::Twist& vel
 ```
 rosbag play xxx --clock
 ```
+
+# 2019.10.08
+
+## image_view 的使用
+
+1. 实时显示灰度图
+
+   ```
+   rosrun image_view image_view image:=/cam_bottom_docking _do_dynamic_scaling:=true
+   ```
+
+# 2019.10.10
+
+## 1. rviz预配置文件
+
+1. launch载入rviz预配置文件
+
+```
+<node pkg="rviz" type="rviz" name="rviz" args="-d $(find laser_localiser)/config/sliding_mapper/sliding_map_dynamic.rviz" output="screen">
+</node>
+```
+
+2. 终端启动载入rviz预配置文件
+
+   ```
+   // icp3d_matching_rviz.rviz 放在rviz目录下
+   rosrun rviz rviz  -d `rospack find visual_servo`/rviz/icp3d_matching_rviz.rviz
+   ```
+
+   
+
+## 2. ros中命名空间
+
+### 2.1 node命名空间
+
+在launch文件中适用关键字ns=namespace_name指定，例如
+
+```
+<node pkg="visual_servo" type="ibvs_constrained" name="ibvs_constrained" output="screen" ns="fuck_name" respawn="true">
+<param name="debug_mode" value="false" />
+...
+</node>
+```
+
+则`debug_mode`字段的完整路径因该是
+
+```
+/fuck_name/ibvs_constrained/debug_mode
+```
+
+如果没有指定ns，则默认为`/`，此时`debug_mode`字段的完整路径因该是
+
+```
+/ibvs_constrained/debug_mode
+```
+
+
+
+### 2.2 NodeHandle命名空间
+
+在新建nodehandle的时候指定，例如：
+
+```c++
+// launch 文件中 ns=="node_namespace"
+ros::init(argc, argv, "node_name"); // node name
+ 
+ros::NodeHandle n; //n 命名空间为/node_namespace
+ros::NodeHandle n1("sub"); //  n1命名空间为/node_namespace/sub
+```
+
+
+
+### 2.3 private命名空间(~)
+
+命名空间在节点名称下，例如
+
+```
+ros::init(argc, argv, "ibvs_constrained"); // node name， 可以被launch文件启动时只当的name覆盖
+
+ros::param::get("~debug_mode")
+```
+
+则`debug_mode`字段的完整路径因该是
+
+```
+/ibvs_constrained/debug_mode
+```
+
+## 3. 获取各命名空间下的参数参数
+
+### 3.1 获取与设置node命名空间下的参数
+
+```
+// launch文件
+<node pkg="visual_servo" type="ibvs_constrained" name="ibvs_constrained" output="screen" ns="fuck_name" respawn="true">
+<param name="debug_mode" value="false" />
+...
+</node>
+   
+// 主程序
+// 相当于设置 /fuck_name/relative_param
+ros::param::set("relative_param", "my_string");
+ros::param::get("relative_name", relative_name)
+```
+
+### 3.2 获取与设置NodeHandle命名空间下的参数
+
+```
+// launch 文件中 ns=="node_namespace"
+
+ros::NodeHandle n1("sub"); //  n1命名空间为/node_namespace/sub
+//相当于设置/node_namespace/sub/relative_param
+nh.setParam("relative_param", "my_string");
+nh.getParam("relative_name", relative_name)
+```
+
+### 3.3 获取与设置private命名空间下的参数
+
+```
+// 两种方式
+
+// 1. NodeHandle方式(必须先新建一个以私有空间为命名空间的ros::NodeHandle)
+  ros::NodeHandle nh("~");
+  std::string param;
+  // 相当于/node_name/private_name
+  nh.getParam("private_name", param);
+
+
+// 2. ros::param方式
+  std::string param;
+  // 相当于/node_name/private_name
+  ros::param::get("~private_name", param);
+
+```
+
+### 3.4 获取全局参数（/空间下）
+
+两种方式都可以，写绝对路径
+
+```
+//法1
+nh.getParam("/global_name", global_name)
+//法2
+ros::param::get("/global_name", global_name)
+```
+
+
+
+### 3.5 一般
+
+1. 一般来说，在写launch文件时，参数都是放在private命名空间下，所以一般推荐使用下面代码来获取参数
+
+```
+ros::param::get("~private_name", param);
+```
+
+2. 对于launch文件中引入launch，被引入的launch里面的参数变成相对于`/`的命名空间，有两种方法：
+
+   1. 将被引入的launch文件命名空间定义在想要的空间下，例如
+
+      ```
+      // point_matcher_mapping.launch里的参数命名空间前缀会加上/ibvs_constrained
+      <include file="$(find visual_servo)/launch/point_matcher_mapping.launch" ns="ibvs_constrained" />
+      ```
+
+   2. 绝对路径或者临时定义`NodeHandle nh("abc")`读取。
+
+3. `rosparam load`的yaml文件会有private该有的前缀，即如果节点有命名空间，则load后，参数也会有private前缀。

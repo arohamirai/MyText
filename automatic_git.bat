@@ -10,7 +10,13 @@ REM change file directory
 REM start git script 
 echo %~dp0
 git status
+<<<<<<< HEAD
 git add .
 git commit -m "auto_backup %dd:/=-% %tt%"
 git pull
+=======
+git pull
+git add .
+git commit -m "auto_backup %dd:/=-% %tt%"
+>>>>>>> 89e4f9481f77d139cb42842e22fc7fc55fd415ef
 git push origin master
