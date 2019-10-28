@@ -1,8 +1,0 @@
-
-1. 建立软链接（或硬链接）
-软链接与硬链接异同：https://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/
-sudo ln -s <源文件/源目录> <目标文件>								#创建软链接，<目标文件>指向<源文件/源目录>，不加-s则三硬链接
-sudo rm -rf <symbolic_name>									#删除链接
-
-
-
